@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Reserve scrollbar space so header/logo don't shift when navigating between pages */
+html {
+  scrollbar-gutter: stable;
+}
