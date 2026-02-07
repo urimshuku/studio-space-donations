@@ -165,7 +165,20 @@ function App() {
     setSelectedCategory(null);
   };
 
-  const displayCategories = categories.length > 0 ? categories : DEFAULT_CATEGORIES;
+  const rawCategories = categories.length > 0 ? categories : DEFAULT_CATEGORIES;
+  // Always show "Essentials" in UI (in case DB still has "A/C")
+  const displayCategories = rawCategories.map((c) =>
+    c.name === 'A/C'
+      ? {
+          ...c,
+          name: 'Essentials',
+          description:
+            'Essential comforts for the space: heating, cooling, and basic amenities so everyone can work in comfort year-round.',
+          target_amount: 2000,
+          current_amount: 500,
+        }
+      : c
+  );
   const generalCategory = displayCategories.find((c) => c.name === 'General Donations');
   const specificCategories = displayCategories.filter((c) => c.name !== 'General Donations');
 
