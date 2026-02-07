@@ -4,6 +4,8 @@ import type { Donation } from '../lib/types';
 
 interface LeaderboardProps {
   categoryId: string;
+  /** When using default categories (no DB), show this donor for Essentials */
+  fallbackDonors?: TopDonor[];
 }
 
 interface TopDonor {
@@ -12,7 +14,7 @@ interface TopDonor {
   is_anonymous: boolean;
 }
 
-export function Leaderboard({ categoryId }: LeaderboardProps) {
+export function Leaderboard({ categoryId, fallbackDonors }: LeaderboardProps) {
   const [topDonors, setTopDonors] = useState<TopDonor[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -93,7 +95,9 @@ export function Leaderboard({ categoryId }: LeaderboardProps) {
     );
   }
 
-  if (topDonors.length === 0) {
+  const donorsToShow = topDonors.length > 0 ? topDonors : (fallbackDonors ?? []);
+
+  if (donorsToShow.length === 0) {
     return (
       <div className="bg-gray-50 rounded-lg p-6 text-center">
         <p className="text-sm text-gray-500">Be the first to donate!</p>
@@ -108,7 +112,7 @@ export function Leaderboard({ categoryId }: LeaderboardProps) {
       </div>
 
       <div className="space-y-3">
-        {topDonors.map((donor, index) => (
+        {donorsToShow.map((donor, index) => (
           <div
             key={index}
             className="flex items-center justify-between bg-white rounded-lg p-3 shadow-sm"
