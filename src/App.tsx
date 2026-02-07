@@ -8,6 +8,7 @@ import type { Category } from './lib/types';
 
 type Page = 'home' | 'payment' | 'success';
 
+// Default categories when Supabase returns none (used on first load or if DB is empty)
 const DEFAULT_CATEGORIES: Category[] = [
   {
     id: 'default-general',
