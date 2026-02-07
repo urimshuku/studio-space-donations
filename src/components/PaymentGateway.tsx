@@ -65,22 +65,28 @@ export function PaymentGateway({ category, onBack, onSuccess }: PaymentGatewayPr
         }
       );
 
-      if (!response.ok) {
-        const errBody = await response.text();
-        console.error('Process donation error:', response.status, errBody);
-        throw new Error('Payment failed');
+      let data: { checkoutUrl?: string; error?: string; message?: string } = {};
+      try {
+        data = await response.json();
+      } catch {
+        // non-JSON response (e.g. 502)
       }
 
-      const data = await response.json();
+      if (!response.ok) {
+        const message = data?.error || data?.message || `Server error (${response.status})`;
+        console.error('Process donation error:', response.status, data);
+        throw new Error(message);
+      }
 
       const redirectUrl = data.checkoutUrl;
       if (!redirectUrl) {
-        throw new Error('No checkout URL received');
+        throw new Error(data?.error || 'No checkout URL received');
       }
       window.location.href = redirectUrl;
     } catch (error) {
       console.error('Payment error:', error);
-      alert('Payment failed. Please try again.');
+      const message = error instanceof Error ? error.message : 'Payment failed. Please try again.';
+      alert(message);
       setProcessing(false);
     }
   };
