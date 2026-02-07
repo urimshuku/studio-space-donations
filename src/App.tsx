@@ -8,6 +8,64 @@ import type { Category } from './lib/types';
 
 type Page = 'home' | 'payment' | 'success';
 
+const DEFAULT_CATEGORIES: Category[] = [
+  {
+    id: 'default-general',
+    name: 'General Donations',
+    description: 'General support for our studio space. Every euro helps us keep the lights on and the space welcoming.',
+    target_amount: 0,
+    current_amount: 0,
+    sort_order: 0,
+    has_progress_bar: false,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  },
+  {
+    id: 'default-insulation',
+    name: 'Insulation',
+    description: 'Help us insulate the studio to stay warm in winter and cool in summer.',
+    target_amount: 2500,
+    current_amount: 0,
+    sort_order: 1,
+    has_progress_bar: true,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  },
+  {
+    id: 'default-garden',
+    name: 'Garden',
+    description: 'Outdoor garden area for breaks and small events.',
+    target_amount: 500,
+    current_amount: 0,
+    sort_order: 2,
+    has_progress_bar: true,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  },
+  {
+    id: 'default-kitchen',
+    name: 'Kitchen',
+    description: 'Kitchen upgrade so we can host workshops and community meals.',
+    target_amount: 5000,
+    current_amount: 0,
+    sort_order: 3,
+    has_progress_bar: true,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  },
+  {
+    id: 'default-ac',
+    name: 'A/C',
+    description: 'Air conditioning for a comfortable working environment year-round.',
+    target_amount: 1000,
+    current_amount: 0,
+    sort_order: 4,
+    has_progress_bar: true,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  },
+];
+
 function App() {
   const [currentPage, setCurrentPage] = useState<Page>('home');
   const [selectedTab, setSelectedTab] = useState('General Donations');
@@ -67,7 +125,7 @@ function App() {
     setCurrentPage('home');
     setSelectedCategory(null);
 
-    const targetCategory = categories.find((c) => c.name === tab);
+    const targetCategory = displayCategories.find((c) => c.name === tab);
     if (targetCategory) {
       const element = document.getElementById(`category-${targetCategory.id}`);
       if (element) {
@@ -91,8 +149,9 @@ function App() {
     setSelectedCategory(null);
   };
 
-  const generalCategory = categories.find((c) => c.name === 'General Donations');
-  const specificCategories = categories.filter((c) => c.name !== 'General Donations');
+  const displayCategories = categories.length > 0 ? categories : DEFAULT_CATEGORIES;
+  const generalCategory = displayCategories.find((c) => c.name === 'General Donations');
+  const specificCategories = displayCategories.filter((c) => c.name !== 'General Donations');
 
   if (loading) {
     return (
@@ -140,6 +199,14 @@ function App() {
             Choose a project below to see its progress and make a contribution.
           </p>
         </div>
+
+        {categories.length === 0 && (
+          <div className="bg-blue-50 border border-blue-200 rounded-xl px-4 py-2 text-center max-w-2xl mx-auto mb-8">
+            <p className="text-blue-800 text-sm">
+              Showing demo categories. Run <code className="bg-blue-100 px-1 rounded">supabase db push</code> to use your database and save donations.
+            </p>
+          </div>
+        )}
 
         {generalCategory && (
           <section
