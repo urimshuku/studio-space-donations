@@ -22,12 +22,23 @@ const DEFAULT_CATEGORIES: Category[] = [
     updated_at: new Date().toISOString(),
   },
   {
+    id: 'default-workshop-tables',
+    name: 'Workshop Tables',
+    description: 'Tables for workshops and collaborative work in the studio.',
+    target_amount: 500,
+    current_amount: 500,
+    sort_order: 1,
+    has_progress_bar: true,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  },
+  {
     id: 'default-insulation',
     name: 'Insulation',
     description: 'Help us insulate the studio to stay warm in winter and cool in summer.',
     target_amount: 2500,
     current_amount: 0,
-    sort_order: 1,
+    sort_order: 2,
     has_progress_bar: true,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
@@ -38,7 +49,7 @@ const DEFAULT_CATEGORIES: Category[] = [
     description: 'Outdoor garden area for breaks and small events.',
     target_amount: 500,
     current_amount: 0,
-    sort_order: 2,
+    sort_order: 3,
     has_progress_bar: true,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
@@ -49,7 +60,7 @@ const DEFAULT_CATEGORIES: Category[] = [
     description: 'Kitchen upgrade so we can host workshops and community meals.',
     target_amount: 5000,
     current_amount: 0,
-    sort_order: 3,
+    sort_order: 4,
     has_progress_bar: true,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
@@ -59,8 +70,8 @@ const DEFAULT_CATEGORIES: Category[] = [
     name: 'Essentials',
     description: 'Essential comforts for the space: heating, cooling, and basic amenities so everyone can work in comfort year-round.',
     target_amount: 2000,
-    current_amount: 500,
-    sort_order: 4,
+    current_amount: 0,
+    sort_order: 5,
     has_progress_bar: true,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
@@ -165,9 +176,25 @@ function App() {
     setSelectedCategory(null);
   };
 
-  const rawCategories = categories.length > 0 ? categories : DEFAULT_CATEGORIES;
-  // Always show "Essentials" in UI (in case DB still has "A/C")
-  const displayCategories = rawCategories.map((c) =>
+  // Use DB categories when present, but always merge in any default category that's missing (e.g. Workshop Tables)
+  const rawCategories =
+    categories.length > 0
+      ? (() => {
+          const byName = new Map(categories.map((c) => [c.name, c]));
+          for (const def of DEFAULT_CATEGORIES) {
+            if (!byName.has(def.name)) byName.set(def.name, def);
+          }
+          return Array.from(byName.values()).sort((a, b) => {
+            if (a.name === 'General Donations') return -1;
+            if (b.name === 'General Donations') return 1;
+            if (a.name === 'Workshop Tables') return -1;
+            if (b.name === 'Workshop Tables') return 1;
+            return (a.sort_order ?? 0) - (b.sort_order ?? 0);
+          });
+        })()
+      : DEFAULT_CATEGORIES;
+  // Always show "Essentials" in UI (in case DB still has "A/C"); use DB amounts, don't hardcode
+  const mapped = rawCategories.map((c) =>
     c.name === 'A/C'
       ? {
           ...c,
@@ -175,10 +202,25 @@ function App() {
           description:
             'Essential comforts for the space: heating, cooling, and basic amenities so everyone can work in comfort year-round.',
           target_amount: 2000,
-          current_amount: 500,
+          current_amount: c.current_amount,
         }
       : c
   );
+  // Remove duplicate names (e.g. both A/C and Essentials showing as Essentials) – keep first
+  const seenNames = new Set<string>();
+  const displayCategories = mapped
+    .filter((c) => {
+      if (seenNames.has(c.name)) return false;
+      seenNames.add(c.name);
+      return true;
+    })
+    .sort((a, b) => {
+      if (a.name === 'General Donations') return -1;
+      if (b.name === 'General Donations') return 1;
+      if (a.name === 'Workshop Tables') return -1;
+      if (b.name === 'Workshop Tables') return 1;
+      return (a.sort_order ?? 0) - (b.sort_order ?? 0);
+    });
   const generalCategory = displayCategories.find((c) => c.name === 'General Donations');
   const specificCategories = displayCategories.filter((c) => c.name !== 'General Donations');
 
@@ -221,12 +263,29 @@ function App() {
 
       <div className="max-w-7xl mx-auto px-4 py-12">
         <div className="mb-12 text-center">
-          <h1 className="text-4xl font-bold text-gray-900 mb-3">
+          <h1 className="text-4xl font-bold text-gray-900 mb-8">
             Support Our Studio Space Renovations
           </h1>
-          <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            Choose a project below to see its progress and make a contribution.
-          </p>
+          <div className="text-lg text-gray-600 max-w-3xl mx-auto space-y-4">
+            <p>
+              Studio Space is a small community hub where people gather for connection, creative unfolding, and meaningful dialogue.
+            </p>
+            <p>
+              Until now, Studio Space has been run by volunteers, and most gatherings have been offered free of charge. The space now needs renovations so it can continue to exist, grow, and welcome people safely.
+            </p>
+            <p>
+              Your donation helps care for the space and supports cultural, educational, and creative gatherings.
+            </p>
+            <p>
+              Every contribution helps keep this space open for community, reflection, and shared moments. If Studio Space resonates with you, we warmly invite you to support it.
+            </p>
+            <p>
+              To complete the needed renovations, Studio Space is raising <strong>14,327 €</strong>.
+            </p>
+            <p>
+              Thank you for being part of making this space continue to exist and grow.
+            </p>
+          </div>
         </div>
 
         {categories.length === 0 && (
@@ -237,35 +296,8 @@ function App() {
           </div>
         )}
 
-        {generalCategory && (
-          <section
-            id={`category-${generalCategory.id}`}
-            className="bg-white rounded-2xl shadow-md p-8 border border-gray-100 flex flex-col gap-6 mb-12"
-          >
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                {generalCategory.name}
-              </h2>
-              <p className="text-gray-600">{generalCategory.description}</p>
-            </div>
-            <div>
-              <p className="text-sm text-gray-600 mb-2">Total Raised</p>
-              <p className="text-4xl font-bold text-gray-900">
-                €{generalCategory.current_amount.toLocaleString()}
-              </p>
-            </div>
-            <button
-              onClick={() => handleDonate(generalCategory)}
-              className="w-full text-white font-bold py-3 px-6 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"
-              style={{ backgroundColor: '#c95b2d' }}
-            >
-              Donate Now
-            </button>
-          </section>
-        )}
-
         {specificCategories.length > 0 && (
-          <section aria-labelledby="specific-causes-heading">
+          <section aria-labelledby="specific-causes-heading" className="mb-12">
             <h2
               id="specific-causes-heading"
               className="text-2xl font-bold text-gray-900 mb-6"
@@ -273,11 +305,18 @@ function App() {
               Specific Causes
             </h2>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {specificCategories.map((category) => (
+              {specificCategories.map((category) => {
+                const isCompleted =
+                  category.current_amount >= category.target_amount && category.target_amount > 0;
+                return (
                 <section
                   key={category.id}
                   id={`category-${category.id}`}
-                  className="bg-white rounded-2xl shadow-md p-8 border border-gray-100 flex flex-col gap-6"
+                  className={`rounded-2xl shadow-md p-8 border border-gray-100 flex flex-col gap-6 ${
+                    isCompleted
+                      ? 'bg-gray-100 opacity-75 pointer-events-none'
+                      : 'bg-white'
+                  }`}
                 >
                   <div>
                     <h3 className="text-xl font-bold text-gray-900 mb-2">
@@ -307,23 +346,56 @@ function App() {
                       />
                     </div>
                     <p className="text-sm text-gray-500 mt-3">
-                      {Math.min(
-                        (category.current_amount / category.target_amount) * 100,
-                        100
-                      ).toFixed(1)}
-                      % funded
+                      {category.current_amount >= category.target_amount && category.target_amount > 0 ? (
+                        <span className="font-semibold text-green-600">Completed</span>
+                      ) : (
+                        `${Math.min(
+                          (category.current_amount / category.target_amount) * 100,
+                          100
+                        ).toFixed(1)}% funded`
+                      )}
                     </p>
                   </div>
                   <button
+                    type="button"
+                    disabled={isCompleted}
                     onClick={() => handleDonate(category)}
-                    className="w-full text-white font-bold py-3 px-6 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"
+                    className="w-full text-white font-bold py-3 px-6 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed"
                     style={{ backgroundColor: '#c95b2d' }}
                   >
                     Donate Now
                   </button>
                 </section>
-              ))}
+                );
+              })}
             </div>
+          </section>
+        )}
+
+        {generalCategory && (
+          <section
+            id={`category-${generalCategory.id}`}
+            className="bg-white rounded-2xl shadow-md p-8 border border-gray-100 flex flex-col gap-6 mb-12"
+          >
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                {generalCategory.name}
+              </h2>
+              <p className="text-gray-600">{generalCategory.description}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-600 mb-2">Total Raised</p>
+              <p className="text-4xl font-bold text-gray-900">
+                €{generalCategory.current_amount.toLocaleString()}
+              </p>
+            </div>
+            <button
+              onClick={() => handleDonate(generalCategory)}
+              className="w-full text-white font-bold py-3 px-6 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"
+              style={{ backgroundColor: '#c95b2d' }}
+            >
+              Donate Now
+            </button>
           </section>
         )}
 
