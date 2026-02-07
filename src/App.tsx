@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Header } from './components/Header';
 import { PaymentGateway } from './components/PaymentGateway';
 import { SuccessPage } from './components/SuccessPage';
-import { Leaderboard } from './components/Leaderboard';
+import { AllDonors } from './components/AllDonors';
 import { supabase } from './lib/supabase';
 import type { Category } from './lib/types';
 
@@ -261,9 +261,6 @@ function App() {
             >
               Donate Now
             </button>
-            <div className="mt-2">
-              <Leaderboard categoryId={generalCategory.id} />
-            </div>
           </section>
         )}
 
@@ -324,21 +321,15 @@ function App() {
                   >
                     Donate Now
                   </button>
-                  <div className="mt-2">
-                    <Leaderboard
-                      categoryId={category.id}
-                      fallbackDonors={
-                        category.name === 'Essentials'
-                          ? [{ donor_name: 'Anonymous', total_amount: 500, is_anonymous: true }]
-                          : undefined
-                      }
-                    />
-                  </div>
                 </section>
               ))}
             </div>
           </section>
         )}
+
+        <section className="mt-12">
+          <AllDonors />
+        </section>
       </div>
     </div>
   );
