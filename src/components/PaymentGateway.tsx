@@ -149,8 +149,8 @@ export function PaymentGateway({ category, onBack, onSuccess }: PaymentGatewayPr
                   setSelectedAmount(null);
                 }}
                 placeholder="Other amount"
-                className="w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:border-transparent transition-all text-base"
-                style={{ '--tw-ring-color': '#c95b2d', fontSize: '16px' } as any}
+                className="w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:border-transparent transition-all"
+                style={{ '--tw-ring-color': '#c95b2d', fontSize: '16px' } as React.CSSProperties}
                 min="1"
                 step="0.01"
               />
@@ -167,7 +167,7 @@ export function PaymentGateway({ category, onBack, onSuccess }: PaymentGatewayPr
               onChange={(e) => setDonorName(e.target.value)}
               disabled={isAnonymous}
               placeholder="Enter your name"
-              className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:bg-gray-100 text-base"
+              className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:bg-gray-100"
               style={{ fontSize: '16px' }}
             />
             <label className="flex items-center gap-2 mt-1.5 sm:mt-2">
