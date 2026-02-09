@@ -1,4 +1,4 @@
-<svg viewBox="0 0 260 90" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 260 130" xmlns="http://www.w3.org/2000/svg">
   <text
     x="4"
     y="34"
@@ -18,5 +18,15 @@
     fill="#000000"
   >
     space.
+  </text>
+  <text
+    x="4"
+    y="116"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="34"
+    font-weight="600"
+    fill="#c95b2d"
+  >
+    donations
   </text>
 </svg>

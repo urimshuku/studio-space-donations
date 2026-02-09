@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useLayoutEffect } from 'react';
 import { Header } from './components/Header';
 import { PaymentGateway } from './components/PaymentGateway';
 import { SuccessPage } from './components/SuccessPage';
 import { AllDonors } from './components/AllDonors';
+import { ImageCarousel } from './components/ImageCarousel';
 import { supabase } from './lib/supabase';
 import type { Category } from './lib/types';
 
@@ -292,6 +293,8 @@ function App() {
             </p>
           </div>
         </div>
+
+        <ImageCarousel />
 
         {categories.length === 0 && (
           <div className="bg-blue-50 border border-blue-200 rounded-xl px-3 py-2 text-center max-w-2xl mx-auto mb-4 sm:mb-6 md:mb-8">

@@ -6,6 +6,9 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   base: process.env.BASE_PATH || '/',
   plugins: [react()],
+  server: {
+    host: true, // listen on 0.0.0.0 so you can open http://<your-ip>:5175 on your phone
+  },
   optimizeDeps: {
     exclude: ['lucide-react'],
   },

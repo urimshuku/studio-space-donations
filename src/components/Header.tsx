@@ -24,7 +24,7 @@ export function Header({ selectedTab, onTabChange, onGoHome }: HeaderProps) {
           <img
             src={`${import.meta.env.BASE_URL}logo.svg`}
             alt="Studio Space Donations logo"
-            className="h-12 sm:h-16 md:h-24 w-auto"
+            className="h-14 sm:h-16 md:h-24 w-auto"
           />
         </a>
       </div>
