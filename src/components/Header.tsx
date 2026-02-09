@@ -22,7 +22,7 @@ export function Header({ selectedTab, onTabChange, onGoHome }: HeaderProps) {
           aria-label="Return to home"
         >
           <img
-            src={`${import.meta.env.BASE_URL}logo.svg`}
+            src={`${import.meta.env.BASE_URL}logo.svg?v=2`}
             alt="Studio Space Donations logo"
             className="h-14 sm:h-16 md:h-24 w-auto"
           />
