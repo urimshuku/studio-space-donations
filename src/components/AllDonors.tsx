@@ -107,16 +107,12 @@ export function AllDonors() {
   }
 
   return (
-    <section
-      id="donations"
-      className="bg-white rounded-xl sm:rounded-2xl shadow-md p-4 sm:p-6 md:p-8 border border-gray-100"
-      aria-labelledby="donations-heading"
-    >
-      <div className="flex items-center justify-between gap-3 mb-4 sm:mb-6">
-        <h2 id="donations-heading" className="text-xl sm:text-2xl font-bold text-gray-900">
-          Donations
-        </h2>
-        <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+    <section id="donations" aria-labelledby="donations-heading">
+      <h2 id="donations-heading" className="text-xl sm:text-2xl font-bold text-gray-900 mb-3 sm:mb-4">
+        Donations
+      </h2>
+      <div className="bg-white rounded-xl sm:rounded-2xl shadow-md p-4 sm:p-6 md:p-8 border border-gray-100">
+        <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
           <span
             className={`text-sm font-medium transition-colors ${
               viewMode === 'chronological' ? 'text-gray-900' : 'text-gray-500'
@@ -134,7 +130,7 @@ export function AllDonors() {
             }}
             role="switch"
             aria-checked={viewMode === 'top'}
-            aria-label="Toggle between by date and top donations"
+            aria-label="Toggle between recent donations and by amount"
           >
             <span
               className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
@@ -147,42 +143,42 @@ export function AllDonors() {
               viewMode === 'top' ? 'text-gray-900' : 'text-gray-500'
             }`}
           >
-            Top donations
+            By amount
           </span>
         </div>
-      </div>
-      {donationsToShow.length === 0 ? (
+        {donationsToShow.length === 0 ? (
         <p className="text-gray-500 text-sm sm:text-base">No donations yet. Be the first to donate!</p>
-      ) : (
-        <div className="space-y-2 sm:space-y-3">
-          {donationsToShow.map((donation, index) => (
-            <div
-              key={donation.id}
-              className="flex items-center justify-between bg-gray-50 rounded-lg p-3 sm:p-4 border border-gray-100"
-            >
-              <div className="flex items-center gap-2 sm:gap-3">
-                <span
-                  className="font-medium w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center rounded-full text-white text-xs sm:text-sm flex-shrink-0"
-                  style={{ backgroundColor: '#c95b2d' }}
-                >
-                  {index + 1}
-                </span>
-                <div className="flex flex-col">
-                  <span className="font-medium text-gray-900 text-sm sm:text-base">
-                    {donation.is_anonymous ? 'Anonymous' : donation.donor_name}
+        ) : (
+          <div className="space-y-2 sm:space-y-3">
+            {donationsToShow.map((donation, index) => (
+              <div
+                key={donation.id}
+                className="flex items-center justify-between bg-gray-50 rounded-lg p-3 sm:p-4 border border-gray-100"
+              >
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <span
+                    className="font-medium w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center rounded-full text-white text-xs sm:text-sm flex-shrink-0"
+                    style={{ backgroundColor: '#c95b2d' }}
+                  >
+                    {index + 1}
                   </span>
-                  <span className="text-xs text-gray-500 mt-0.5">
-                    {formatRelativeTime(donation.created_at)}
-                  </span>
+                  <div className="flex flex-col">
+                    <span className="font-medium text-gray-900 text-sm sm:text-base">
+                      {donation.is_anonymous ? 'Anonymous' : donation.donor_name}
+                    </span>
+                    <span className="text-xs text-gray-500 mt-0.5">
+                      {formatRelativeTime(donation.created_at)}
+                    </span>
+                  </div>
                 </div>
+                <span className="font-semibold text-gray-900 text-sm sm:text-base">
+                  €{donation.amount.toLocaleString()}
+                </span>
               </div>
-              <span className="font-semibold text-gray-900 text-sm sm:text-base">
-                €{donation.amount.toLocaleString()}
-              </span>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </div>
     </section>
   );
 }

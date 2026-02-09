@@ -1,4 +1,5 @@
 import { useState, useEffect, useLayoutEffect } from 'react';
+import { Share2 } from 'lucide-react';
 import { Header } from './components/Header';
 import { PaymentGateway } from './components/PaymentGateway';
 import { SuccessPage } from './components/SuccessPage';
@@ -131,6 +132,22 @@ function App() {
     }
   }, [currentPage]);
 
+  // Open payment for a category when visiting a shared link (?donate=categoryId)
+  useEffect(() => {
+    if (loading) return;
+    const params = new URLSearchParams(window.location.search);
+    const categoryId = params.get('donate');
+    if (!categoryId) return;
+    const category =
+      categories.find((c) => c.id === categoryId) ??
+      DEFAULT_CATEGORIES.find((c) => c.id === categoryId);
+    if (category) {
+      setSelectedCategory(category);
+      setCurrentPage('payment');
+      window.history.replaceState({}, '', window.location.pathname || '/');
+    }
+  }, [loading, categories]);
+
   async function fetchCategories() {
     if (!supabase) return;
     try {
@@ -166,6 +183,34 @@ function App() {
     setSelectedCategory(category);
     setCurrentPage('payment');
     window.scrollTo(0, 0);
+  };
+
+  const getShareUrl = (category: Category) => {
+    const base = `${window.location.origin}${import.meta.env.BASE_URL || '/'}`.replace(/\/$/, '');
+    return `${base}?donate=${encodeURIComponent(category.id)}`;
+  };
+
+  const handleShare = async (e: React.MouseEvent, category: Category) => {
+    e.preventDefault();
+    const url = getShareUrl(category);
+    const title = `Donate to ${category.name} - Studio Space`;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title, url });
+      } else {
+        await navigator.clipboard.writeText(url);
+        alert('Link copied to clipboard');
+      }
+    } catch (err) {
+      if ((err as Error).name !== 'AbortError') {
+        try {
+          await navigator.clipboard.writeText(url);
+          alert('Link copied to clipboard');
+        } catch {
+          alert(url);
+        }
+      }
+    }
   };
 
   const handlePaymentSuccess = () => {
@@ -288,9 +333,6 @@ function App() {
             <p>
               To complete the needed renovations, Studio Space is raising <strong>14,327 €</strong>.
             </p>
-            <p>
-              Thank you for being part of making this space continue to exist and grow.
-            </p>
           </div>
         </div>
 
@@ -364,15 +406,26 @@ function App() {
                       )}
                     </p>
                   </div>
-                  <button
-                    type="button"
-                    disabled={isCompleted}
-                    onClick={() => handleDonate(category)}
-                    className="w-full text-white font-bold py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg text-sm sm:text-base transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed"
-                    style={{ backgroundColor: '#c95b2d' }}
-                  >
-                    Donate Now
-                  </button>
+                  <div className="flex items-stretch gap-2">
+                    <button
+                      type="button"
+                      disabled={isCompleted}
+                      onClick={() => handleDonate(category)}
+                      className="flex-1 text-white font-bold py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg text-sm sm:text-base transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed"
+                      style={{ backgroundColor: '#c95b2d' }}
+                    >
+                      Donate Now
+                    </button>
+                    <button
+                      type="button"
+                      onClick={(e) => handleShare(e, category)}
+                      disabled={isCompleted}
+                      className="flex-shrink-0 p-2.5 sm:p-3 rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 hover:border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      aria-label={`Share link to donate to ${category.name}`}
+                    >
+                      <Share2 className="w-5 h-5 sm:w-6 sm:h-6" />
+                    </button>
+                  </div>
                 </section>
                 );
               })}
@@ -397,19 +450,50 @@ function App() {
                 €{generalCategory.current_amount.toLocaleString()}
               </p>
             </div>
-            <button
-              onClick={() => handleDonate(generalCategory)}
-              className="w-full text-white font-bold py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg text-sm sm:text-base transition-all duration-200 shadow-lg hover:shadow-xl"
-              style={{ backgroundColor: '#c95b2d' }}
-            >
-              Donate Now
-            </button>
+            <div className="flex items-stretch gap-2">
+              <button
+                onClick={() => handleDonate(generalCategory)}
+                className="flex-1 text-white font-bold py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg text-sm sm:text-base transition-all duration-200 shadow-lg hover:shadow-xl"
+                style={{ backgroundColor: '#c95b2d' }}
+              >
+                Donate Now
+              </button>
+              <button
+                type="button"
+                onClick={(e) => handleShare(e, generalCategory)}
+                className="flex-shrink-0 p-2.5 sm:p-3 rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-colors"
+                aria-label={`Share link to donate to ${generalCategory.name}`}
+              >
+                <Share2 className="w-5 h-5 sm:w-6 sm:h-6" />
+              </button>
+            </div>
           </section>
         )}
 
-        <section className="mt-6 sm:mt-8 md:mt-12">
+        <section className="mt-10 sm:mt-12 md:mt-16">
           <AllDonors />
         </section>
+
+        <footer className="mt-12 sm:mt-16 md:mt-20 pb-8 sm:pb-12 text-center">
+          <p
+            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl max-w-3xl mx-auto"
+            style={{ color: '#c95b2d', fontFamily: "'Reenie Beanie', cursive" }}
+          >
+            Thank you for being part of making this space continue to exist and grow.
+          </p>
+          <svg
+            className="mx-auto mt-4 w-8 h-8 sm:w-10 sm:h-10"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden
+          >
+            <path
+              d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+              fill="#c95b2d"
+            />
+          </svg>
+        </footer>
       </div>
     </div>
   );
