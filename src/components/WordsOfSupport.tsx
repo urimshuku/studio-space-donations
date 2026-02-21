@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
+import { ScrollReveal } from './ScrollReveal';
 
 interface SupportEntry {
   id: string;
@@ -59,9 +60,16 @@ export function WordsOfSupport() {
 
   if (loading) {
     return (
-      <section className="mt-10 sm:mt-12 md:mt-16" aria-label="Words of Support">
-        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3 sm:mb-4">Words of Support</h2>
-        <div className="bg-white rounded-xl sm:rounded-2xl shadow-md p-4 sm:p-6 md:p-8 border border-gray-100">
+      <section className="mt-10 sm:mt-12 md:mt-16 pt-6 sm:pt-8 md:pt-10" aria-label="Words of Support">
+        <div
+          className="w-8 sm:w-10 h-1 rounded-full"
+          style={{ backgroundColor: '#c95b2d' }}
+          aria-hidden
+        />
+        <ScrollReveal fadeOnly>
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4 mt-4 sm:mt-6 md:mt-8">Words of Support</h2>
+        </ScrollReveal>
+        <div className="bg-white rounded-xl sm:rounded-2xl shadow-md p-4 sm:p-6 md:p-8 border border-gray-100 transition-shadow duration-200 ease-out hover:shadow-xl">
           <div className="animate-pulse space-y-3">
             <div className="h-4 bg-gray-200 rounded w-3/4" />
             <div className="h-4 bg-gray-200 rounded w-full" />
@@ -73,30 +81,39 @@ export function WordsOfSupport() {
   }
 
   return (
-    <section id="words-of-support" aria-labelledby="words-of-support-heading">
-      <h2 id="words-of-support-heading" className="text-xl sm:text-2xl font-bold text-gray-900 mb-3 sm:mb-4">
-        Words of Support
-      </h2>
-      <div className="bg-white rounded-xl sm:rounded-2xl shadow-md p-4 sm:p-6 md:p-8 border border-gray-100">
-        {entries.length === 0 ? (
-          <p className="text-gray-500 text-sm sm:text-base">
-            No messages yet. Leave a note when you donate to show your support.
-          </p>
-        ) : (
-          <ul className="space-y-4 sm:space-y-5">
-            {entries.map((entry) => (
-              <li key={entry.id} className="border-b border-gray-100 last:border-0 pb-4 sm:pb-5 last:pb-0">
-                <p className="text-gray-900 text-sm sm:text-base leading-relaxed italic">
-                  &ldquo;{entry.words_of_support}&rdquo;
-                </p>
-                <p className="text-gray-500 text-xs sm:text-sm mt-2">
-                  — {entry.is_anonymous ? 'Anonymous' : entry.donor_name}
-                </p>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+    <section id="words-of-support" aria-labelledby="words-of-support-heading" className="pt-6 sm:pt-8 md:pt-10">
+      <div
+        className="w-8 sm:w-10 h-1 rounded-full"
+        style={{ backgroundColor: '#c95b2d' }}
+        aria-hidden
+      />
+      <ScrollReveal fadeOnly>
+        <h2 id="words-of-support-heading" className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4 mt-4 sm:mt-6 md:mt-8">
+          Words of Support
+        </h2>
+      </ScrollReveal>
+      <ScrollReveal>
+        <div className="bg-white rounded-xl sm:rounded-2xl shadow-md p-4 sm:p-6 md:p-8 border border-gray-100 transition-shadow duration-200 ease-out hover:shadow-xl">
+          {entries.length === 0 ? (
+            <p className="text-gray-500 text-sm sm:text-base">
+              No messages yet. Leave a note when you donate to show your support.
+            </p>
+          ) : (
+            <ul className="space-y-4 sm:space-y-5">
+              {entries.map((entry) => (
+                <li key={entry.id} className="border-b border-gray-100 last:border-0 pb-4 sm:pb-5 last:pb-0">
+                  <p className="text-gray-900 text-sm sm:text-base leading-relaxed italic">
+                    &ldquo;{entry.words_of_support}&rdquo;
+                  </p>
+                  <p className="text-gray-500 text-xs sm:text-sm mt-2">
+                    — {entry.is_anonymous ? 'Anonymous' : entry.donor_name}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </ScrollReveal>
     </section>
   );
 }

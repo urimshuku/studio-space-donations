@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
+import { ScrollReveal } from './ScrollReveal';
 import type { Donation } from '../lib/types';
 
 type ViewMode = 'chronological' | 'top';
@@ -107,77 +108,86 @@ export function AllDonors() {
   }
 
   return (
-    <section id="donations" aria-labelledby="donations-heading">
-      <h2 id="donations-heading" className="text-xl sm:text-2xl font-bold text-gray-900 mb-3 sm:mb-4">
-        Donations
-      </h2>
-      <div className="bg-white rounded-xl sm:rounded-2xl shadow-md p-4 sm:p-6 md:p-8 border border-gray-100">
-        <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
-          <span
-            className={`text-sm font-medium transition-colors ${
-              viewMode === 'chronological' ? 'text-gray-900' : 'text-gray-500'
-            }`}
-          >
-            By date
-          </span>
-          <button
-            type="button"
-            onClick={() => setViewMode((m) => (m === 'chronological' ? 'top' : 'chronological'))}
-            className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2"
-            style={{
-              backgroundColor: viewMode === 'top' ? '#c95b2d' : '#d1d5db',
-              focusRingColor: '#c95b2d',
-            }}
-            role="switch"
-            aria-checked={viewMode === 'top'}
-            aria-label="Toggle between recent donations and by amount"
-          >
+    <section id="donations" aria-labelledby="donations-heading" className="pt-6 sm:pt-8 md:pt-10">
+      <div
+        className="w-8 sm:w-10 h-1 rounded-full"
+        style={{ backgroundColor: '#c95b2d' }}
+        aria-hidden
+      />
+      <ScrollReveal fadeOnly>
+        <h2 id="donations-heading" className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4 mt-4 sm:mt-6 md:mt-8">
+          Contributors
+        </h2>
+      </ScrollReveal>
+      <div className="bg-white rounded-xl sm:rounded-2xl shadow-md p-4 sm:p-6 md:p-8 border border-gray-100 transition-shadow duration-200 ease-out hover:shadow-xl">
+        <ScrollReveal>
+          <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
             <span
-              className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                viewMode === 'top' ? 'translate-x-6' : 'translate-x-1'
+              className={`text-sm font-medium transition-colors ${
+                viewMode === 'chronological' ? 'text-gray-900' : 'text-gray-500'
               }`}
-            />
-          </button>
-          <span
-            className={`text-sm font-medium transition-colors ${
-              viewMode === 'top' ? 'text-gray-900' : 'text-gray-500'
-            }`}
-          >
-            By amount
-          </span>
-        </div>
-        {donationsToShow.length === 0 ? (
-        <p className="text-gray-500 text-sm sm:text-base">No donations yet. Be the first to donate!</p>
-        ) : (
-          <div className="space-y-2 sm:space-y-3">
-            {donationsToShow.map((donation, index) => (
-              <div
-                key={donation.id}
-                className="flex items-center justify-between bg-gray-50 rounded-lg p-3 sm:p-4 border border-gray-100"
-              >
-                <div className="flex items-center gap-2 sm:gap-3">
-                  <span
-                    className="font-medium w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center rounded-full text-white text-xs sm:text-sm flex-shrink-0"
-                    style={{ backgroundColor: '#c95b2d' }}
-                  >
-                    {index + 1}
-                  </span>
-                  <div className="flex flex-col">
-                    <span className="font-medium text-gray-900 text-sm sm:text-base">
-                      {donation.is_anonymous ? 'Anonymous' : donation.donor_name}
-                    </span>
-                    <span className="text-xs text-gray-500 mt-0.5">
-                      {formatRelativeTime(donation.created_at)}
-                    </span>
-                  </div>
-                </div>
-                <span className="font-semibold text-gray-900 text-sm sm:text-base">
-                  €{donation.amount.toLocaleString()}
-                </span>
-              </div>
-            ))}
+            >
+              By date
+            </span>
+            <button
+              type="button"
+              onClick={() => setViewMode((m) => (m === 'chronological' ? 'top' : 'chronological'))}
+              className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2"
+              style={{
+                backgroundColor: viewMode === 'top' ? '#c95b2d' : '#d1d5db',
+                focusRingColor: '#c95b2d',
+              }}
+              role="switch"
+              aria-checked={viewMode === 'top'}
+              aria-label="Toggle between recent donations and by amount"
+            >
+              <span
+                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                  viewMode === 'top' ? 'translate-x-6' : 'translate-x-1'
+                }`}
+              />
+            </button>
+            <span
+              className={`text-sm font-medium transition-colors ${
+                viewMode === 'top' ? 'text-gray-900' : 'text-gray-500'
+              }`}
+            >
+              By amount
+            </span>
           </div>
-        )}
+          {donationsToShow.length === 0 ? (
+            <p className="text-gray-500 text-sm sm:text-base">No donations yet. Be the first to donate!</p>
+          ) : (
+            <div className="space-y-2 sm:space-y-3">
+              {donationsToShow.map((donation, index) => (
+                <div
+                  key={donation.id}
+                  className="flex items-center justify-between bg-gray-50 rounded-lg p-3 sm:p-4 border border-gray-100"
+                >
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <span
+                      className="font-medium w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center rounded-full text-white text-xs sm:text-sm flex-shrink-0"
+                      style={{ backgroundColor: '#c95b2d' }}
+                    >
+                      {index + 1}
+                    </span>
+                    <div className="flex flex-col">
+                      <span className="font-medium text-gray-900 text-sm sm:text-base">
+                        {donation.is_anonymous ? 'Anonymous' : donation.donor_name}
+                      </span>
+                      <span className="text-xs text-gray-500 mt-0.5">
+                        {formatRelativeTime(donation.created_at)}
+                      </span>
+                    </div>
+                  </div>
+                  <span className="font-semibold text-gray-900 text-sm sm:text-base">
+                    €{donation.amount.toLocaleString()}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </ScrollReveal>
       </div>
     </section>
   );

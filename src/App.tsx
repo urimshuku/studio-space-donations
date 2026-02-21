@@ -6,6 +6,9 @@ import { SuccessPage } from './components/SuccessPage';
 import { AllDonors } from './components/AllDonors';
 import { WordsOfSupport } from './components/WordsOfSupport';
 import { ImageCarousel } from './components/ImageCarousel';
+import { ScrollReveal } from './components/ScrollReveal';
+import { FooterQuote } from './components/FooterQuote';
+import { Footer } from './components/Footer';
 import { supabase } from './lib/supabase';
 import type { Category } from './lib/types';
 
@@ -276,16 +279,23 @@ function App() {
   const generalCategory = displayCategories.find((c) => c.name === 'General Donations');
   const specificCategories = displayCategories.filter((c) => c.name !== 'General Donations');
 
+  const handleDonateNow = () => {
+    if (generalCategory) handleDonate(generalCategory);
+  };
+
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div
-            className="w-16 h-16 border-4 border-t-transparent rounded-full animate-spin mx-auto mb-4"
-            style={{ borderColor: 'rgba(201, 91, 45, 0.2)', borderTopColor: '#c95b2d' }}
-          />
-          <p className="text-gray-600 font-medium">Loading...</p>
+      <div className="min-h-screen bg-gray-50 flex flex-col">
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <div
+              className="w-16 h-16 border-4 border-t-transparent rounded-full animate-spin mx-auto mb-4"
+              style={{ borderColor: 'rgba(201, 91, 45, 0.2)', borderTopColor: '#c95b2d' }}
+            />
+            <p className="text-gray-600 font-medium">Loading...</p>
+          </div>
         </div>
+        <Footer />
       </div>
     );
   }
@@ -296,48 +306,55 @@ function App() {
 
   if (currentPage === 'payment' && selectedCategory) {
     return (
-      <div className="min-h-screen bg-gray-50 pb-12 overflow-x-hidden">
-        <Header selectedTab={selectedTab} onTabChange={handleTabChange} onGoHome={handleGoHome} />
-        <div className="mt-4 sm:mt-6 md:mt-8 pt-2 sm:pt-4 px-3 sm:px-4">
-          <PaymentGateway
-            category={selectedCategory}
-            onBack={() => setCurrentPage('home')}
-            onSuccess={handlePaymentSuccess}
-          />
+      <div className="min-h-screen bg-gray-50 flex flex-col">
+        <Header selectedTab={selectedTab} onTabChange={handleTabChange} onGoHome={handleGoHome} onDonateNow={handleDonateNow} />
+        <div className="flex-1 pb-12 overflow-x-hidden">
+          <div className="mt-4 sm:mt-6 md:mt-8 pt-2 sm:pt-4 px-3 sm:px-4">
+            <PaymentGateway
+              category={selectedCategory}
+              onBack={() => setCurrentPage('home')}
+              onSuccess={handlePaymentSuccess}
+            />
+          </div>
         </div>
+        <Footer />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header selectedTab={selectedTab} onTabChange={handleTabChange} onGoHome={handleGoHome} />
-
-      <div className="max-w-7xl mx-auto px-3 py-6 sm:px-4 sm:py-8 md:py-12">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      <Header selectedTab={selectedTab} onTabChange={handleTabChange} onGoHome={handleGoHome} onDonateNow={handleDonateNow} />
+      <div className="flex-1">
+      <div className="max-w-7xl mx-auto px-3 pt-10 pb-6 sm:px-4 sm:pt-12 sm:pb-8 md:pt-16 md:pb-12">
         <div className="mb-6 sm:mb-8 md:mb-12 text-center">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4 sm:mb-6 md:mb-8">
-            Support Our Studio Space Renovations
-          </h1>
-          <div className="text-base sm:text-lg text-gray-600 max-w-3xl mx-auto space-y-3 sm:space-y-4">
-            <p>
+          <ScrollReveal fadeOnly>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4 sm:mb-6 md:mb-8">
+              Support Our Studio Space Renovations
+            </h1>
+          </ScrollReveal>
+          <ScrollReveal className="space-y-3 sm:space-y-4 max-w-3xl mx-auto">
+            <p className="text-base sm:text-lg text-gray-600">
               Studio Space is a small community hub where people gather for connection, creative unfolding, and meaningful dialogue.
             </p>
-            <p>
+            <p className="text-base sm:text-lg text-gray-600">
               Until now, Studio Space has been run by volunteers, and most gatherings have been offered free of charge. The space now needs renovations so it can continue to exist, grow, and welcome people safely.
             </p>
-            <p>
+            <p className="text-base sm:text-lg text-gray-600">
               Your donation helps care for the space and supports cultural, educational, and creative gatherings.
             </p>
-            <p>
+            <p className="text-base sm:text-lg text-gray-600">
               Every contribution helps keep this space open for community, reflection, and shared moments. If Studio Space resonates with you, we warmly invite you to support it.
             </p>
-            <p>
+            <p className="text-base sm:text-lg text-gray-600">
               To complete the needed renovations, Studio Space is raising <strong>14,327 €</strong>.
             </p>
-          </div>
+          </ScrollReveal>
         </div>
 
-        <ImageCarousel />
+        <ScrollReveal fadeOnly>
+          <ImageCarousel />
+        </ScrollReveal>
 
         {categories.length === 0 && (
           <div className="bg-blue-50 border border-blue-200 rounded-xl px-3 py-2 text-center max-w-2xl mx-auto mb-4 sm:mb-6 md:mb-8">
@@ -348,13 +365,20 @@ function App() {
         )}
 
         {specificCategories.length > 0 && (
-          <section aria-labelledby="causes-heading" className="mb-6 sm:mb-8 md:mb-12">
-            <h2
-              id="causes-heading"
-              className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6"
-            >
-              Causes
-            </h2>
+          <section aria-labelledby="causes-heading" className="mt-10 sm:mt-12 md:mt-16 mb-6 sm:mb-8 md:mb-12">
+            <div
+              className="w-8 sm:w-10 h-1 rounded-full"
+              style={{ backgroundColor: '#c95b2d' }}
+              aria-hidden
+            />
+            <ScrollReveal fadeOnly>
+              <h2
+                id="causes-heading"
+                className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 sm:mb-6 pt-4 sm:pt-6 md:pt-8"
+              >
+                Causes
+              </h2>
+            </ScrollReveal>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
               {specificCategories.map((category) => {
                 const isCompleted =
@@ -363,70 +387,72 @@ function App() {
                 <section
                   key={category.id}
                   id={`category-${category.id}`}
-                  className={`rounded-xl sm:rounded-2xl shadow-md p-4 sm:p-6 md:p-8 border border-gray-100 flex flex-col gap-4 sm:gap-6 ${
+                  className={`rounded-xl sm:rounded-2xl shadow-md p-4 sm:p-6 md:p-8 border border-gray-100 flex flex-col gap-4 sm:gap-6 transition-shadow duration-200 ease-out hover:shadow-xl ${
                     isCompleted
                       ? 'bg-gray-100 opacity-75 pointer-events-none'
                       : 'bg-white'
                   }`}
                 >
-                  <div>
-                    <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-1 sm:mb-2">
-                      {category.name}
-                    </h3>
-                    <p className="text-gray-600 text-sm sm:text-base">{category.description}</p>
-                  </div>
-                  <div>
-                    <div className="flex justify-between items-baseline mb-2 sm:mb-4">
-                      <span className="text-2xl sm:text-3xl font-bold text-gray-900">
-                        €{category.current_amount.toLocaleString()}
-                      </span>
-                      <span className="text-sm sm:text-base md:text-lg text-gray-500">
-                        of €{category.target_amount.toLocaleString()} goal
-                      </span>
+                  <ScrollReveal>
+                    <div>
+                      <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-1 sm:mb-2">
+                        {category.name}
+                      </h3>
+                      <p className="text-gray-600 text-sm sm:text-base">{category.description}</p>
                     </div>
-                    <div className="relative w-full h-2.5 sm:h-3 bg-gray-100 rounded-full overflow-hidden">
-                      <div
-                        className="absolute top-0 left-0 h-full transition-all duration-700 ease-out rounded-full"
-                        style={{
-                          width: `${Math.min(
+                    <div>
+                      <div className="flex justify-between items-baseline mb-2 sm:mb-4">
+                        <span className="text-2xl sm:text-3xl font-bold text-gray-900">
+                          €{category.current_amount.toLocaleString()}
+                        </span>
+                        <span className="text-sm sm:text-base md:text-lg text-gray-500">
+                          of €{category.target_amount.toLocaleString()} goal
+                        </span>
+                      </div>
+                      <div className="relative w-full h-2.5 sm:h-3 bg-gray-100 rounded-full overflow-hidden">
+                        <div
+                          className="absolute top-0 left-0 h-full transition-all duration-700 ease-out rounded-full"
+                          style={{
+                            width: `${Math.min(
+                              (category.current_amount / category.target_amount) * 100,
+                              100
+                            )}%`,
+                            backgroundColor: '#c95b2d',
+                          }}
+                        />
+                      </div>
+                      <p className="text-xs sm:text-sm text-gray-500 mt-2 sm:mt-3">
+                        {category.current_amount >= category.target_amount && category.target_amount > 0 ? (
+                          <span className="font-semibold text-green-600">Completed</span>
+                        ) : (
+                          `${Math.min(
                             (category.current_amount / category.target_amount) * 100,
                             100
-                          )}%`,
-                          backgroundColor: '#c95b2d',
-                        }}
-                      />
+                          ).toFixed(1)}% funded`
+                        )}
+                      </p>
                     </div>
-                    <p className="text-xs sm:text-sm text-gray-500 mt-2 sm:mt-3">
-                      {category.current_amount >= category.target_amount && category.target_amount > 0 ? (
-                        <span className="font-semibold text-green-600">Completed</span>
-                      ) : (
-                        `${Math.min(
-                          (category.current_amount / category.target_amount) * 100,
-                          100
-                        ).toFixed(1)}% funded`
-                      )}
-                    </p>
-                  </div>
-                  <div className="flex items-stretch gap-2">
-                    <button
-                      type="button"
-                      disabled={isCompleted}
-                      onClick={() => handleDonate(category)}
-                      className="flex-1 text-white font-bold py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg text-sm sm:text-base transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed"
-                      style={{ backgroundColor: '#c95b2d' }}
-                    >
-                      Donate Now
-                    </button>
-                    <button
-                      type="button"
-                      onClick={(e) => handleShare(e, category)}
-                      disabled={isCompleted}
-                      className="flex-shrink-0 p-2.5 sm:p-3 rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 hover:border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                      aria-label={`Share link to donate to ${category.name}`}
-                    >
-                      <Share2 className="w-5 h-5 sm:w-6 sm:h-6" />
-                    </button>
-                  </div>
+                    <div className="flex items-stretch gap-2">
+                      <button
+                        type="button"
+                        disabled={isCompleted}
+                        onClick={() => handleDonate(category)}
+                        className="flex-1 text-white font-bold py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg text-sm sm:text-base transition-all duration-200 shadow-md hover:shadow-lg disabled:cursor-not-allowed"
+                        style={{ backgroundColor: '#c95b2d' }}
+                      >
+                        Donate Now
+                      </button>
+                      <button
+                        type="button"
+                        onClick={(e) => handleShare(e, category)}
+                        disabled={isCompleted}
+                        className="flex-shrink-0 p-2.5 sm:p-3 rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 hover:border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        aria-label={`Share link to donate to ${category.name}`}
+                      >
+                        <Share2 className="w-5 h-5 sm:w-6 sm:h-6" />
+                      </button>
+                    </div>
+                  </ScrollReveal>
                 </section>
                 );
               })}
@@ -437,37 +463,39 @@ function App() {
         {generalCategory && (
           <section
             id={`category-${generalCategory.id}`}
-            className="bg-white rounded-xl sm:rounded-2xl shadow-md p-4 sm:p-6 md:p-8 border border-gray-100 flex flex-col gap-4 sm:gap-6 mb-6 sm:mb-8 md:mb-12"
+            className="bg-white rounded-xl sm:rounded-2xl shadow-md p-4 sm:p-6 md:p-8 border border-gray-100 flex flex-col gap-4 sm:gap-6 mb-6 sm:mb-8 md:mb-12 transition-shadow duration-200 ease-out hover:shadow-xl"
           >
-            <div>
-              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1 sm:mb-2">
-                {generalCategory.name}
-              </h2>
-              <p className="text-gray-600 text-sm sm:text-base">{generalCategory.description}</p>
-            </div>
-            <div>
-              <p className="text-xs sm:text-sm text-gray-600 mb-1 sm:mb-2">Total Raised</p>
-              <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">
-                €{generalCategory.current_amount.toLocaleString()}
-              </p>
-            </div>
-            <div className="flex items-stretch gap-2">
-              <button
-                onClick={() => handleDonate(generalCategory)}
-                className="flex-1 text-white font-bold py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg text-sm sm:text-base transition-all duration-200 shadow-lg hover:shadow-xl"
-                style={{ backgroundColor: '#c95b2d' }}
-              >
-                Donate Now
-              </button>
-              <button
-                type="button"
-                onClick={(e) => handleShare(e, generalCategory)}
-                className="flex-shrink-0 p-2.5 sm:p-3 rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-colors"
-                aria-label={`Share link to donate to ${generalCategory.name}`}
-              >
-                <Share2 className="w-5 h-5 sm:w-6 sm:h-6" />
-              </button>
-            </div>
+            <ScrollReveal>
+              <div>
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1 sm:mb-2">
+                  {generalCategory.name}
+                </h2>
+                <p className="text-gray-600 text-sm sm:text-base">{generalCategory.description}</p>
+              </div>
+              <div>
+                <p className="text-xs sm:text-sm text-gray-600 mb-1 sm:mb-2">Total Raised</p>
+                <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">
+                  €{generalCategory.current_amount.toLocaleString()}
+                </p>
+              </div>
+              <div className="flex items-stretch gap-2">
+                <button
+                  onClick={() => handleDonate(generalCategory)}
+                  className="flex-1 text-white font-bold py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg text-sm sm:text-base transition-all duration-200 shadow-md hover:shadow-lg"
+                  style={{ backgroundColor: '#c95b2d' }}
+                >
+                  Donate Now
+                </button>
+                <button
+                  type="button"
+                  onClick={(e) => handleShare(e, generalCategory)}
+                  className="flex-shrink-0 p-2.5 sm:p-3 rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-colors"
+                  aria-label={`Share link to donate to ${generalCategory.name}`}
+                >
+                  <Share2 className="w-5 h-5 sm:w-6 sm:h-6" />
+                </button>
+              </div>
+            </ScrollReveal>
           </section>
         )}
 
@@ -479,27 +507,10 @@ function App() {
           <WordsOfSupport />
         </section>
 
-        <footer className="mt-12 sm:mt-16 md:mt-20 pb-8 sm:pb-12 text-center">
-          <p
-            className="text-2xl sm:text-[1.65rem] md:text-[1.65rem] lg:text-[1.65rem] max-w-3xl mx-auto"
-            style={{ color: '#c95b2d', fontFamily: "'Reenie Beanie', cursive" }}
-          >
-            Thank you for being part of making this space continue to exist and grow.
-          </p>
-          <svg
-            className="mx-auto mt-4 w-8 h-8 sm:w-10 sm:h-10"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            aria-hidden
-          >
-            <path
-              d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-              fill="#c95b2d"
-            />
-          </svg>
-        </footer>
+        <FooterQuote />
       </div>
+      </div>
+      <Footer />
     </div>
   );
 }

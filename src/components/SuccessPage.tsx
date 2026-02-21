@@ -1,4 +1,5 @@
 import { CheckCircle } from 'lucide-react';
+import { Footer } from './Footer';
 
 interface SuccessPageProps {
   onBackHome: () => void;
@@ -6,7 +7,8 @@ interface SuccessPageProps {
 
 export function SuccessPage({ onBackHome }: SuccessPageProps) {
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-3 sm:p-4">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      <div className="flex-1 flex items-center justify-center p-3 sm:p-4">
       <div className="max-w-md w-full">
         <div className="bg-white rounded-xl sm:rounded-2xl shadow-2xl p-5 sm:p-6 md:p-8 text-center">
           <div className="mb-4 sm:mb-6">
@@ -47,6 +49,8 @@ export function SuccessPage({ onBackHome }: SuccessPageProps) {
           </div>
         </div>
       </div>
+      </div>
+      <Footer />
     </div>
   );
 }

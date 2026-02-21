@@ -13,3 +13,112 @@ html {
     font-size: 15px;
   }
 }
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out both;
+}
+
+/* Footer links: underline from left to right on hover (text only, orange) */
+.footer-link-underline {
+  position: relative;
+}
+.footer-link-underline::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 1px;
+  background: #c95b2d;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+.footer-link-underline:hover::after,
+a:hover .footer-link-underline::after {
+  transform: scaleX(1);
+}
+
+/* Footer heart: slide in from bottom at natural pace */
+@keyframes heartSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.heart-slide-up {
+  animation: heartSlideUp 1.8s ease-out forwards;
+}
+
+/* Slide-in on scroll: card contents fade in and move up with stagger */
+@keyframes slideUpReveal {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.scroll-reveal-content > * {
+  opacity: 0;
+  transform: translateY(16px);
+  animation: slideUpReveal 600ms ease-out forwards;
+}
+
+.scroll-reveal-content:not(.in-view) > * {
+  animation: none;
+}
+
+.scroll-reveal-content.in-view > *:nth-child(1) { animation-delay: 0ms; }
+.scroll-reveal-content.in-view > *:nth-child(2) { animation-delay: 90ms; }
+.scroll-reveal-content.in-view > *:nth-child(3) { animation-delay: 180ms; }
+.scroll-reveal-content.in-view > *:nth-child(4) { animation-delay: 270ms; }
+.scroll-reveal-content.in-view > *:nth-child(5) { animation-delay: 360ms; }
+.scroll-reveal-content.in-view > *:nth-child(6) { animation-delay: 450ms; }
+.scroll-reveal-content.in-view > *:nth-child(7) { animation-delay: 540ms; }
+.scroll-reveal-content.in-view > *:nth-child(8) { animation-delay: 630ms; }
+.scroll-reveal-content.in-view > *:nth-child(9) { animation-delay: 720ms; }
+.scroll-reveal-content.in-view > *:nth-child(10) { animation-delay: 810ms; }
+.scroll-reveal-content.in-view > *:nth-child(11) { animation-delay: 900ms; }
+.scroll-reveal-content.in-view > *:nth-child(12) { animation-delay: 990ms; }
+.scroll-reveal-content.in-view > *:nth-child(13) { animation-delay: 1080ms; }
+.scroll-reveal-content.in-view > *:nth-child(14) { animation-delay: 1170ms; }
+.scroll-reveal-content.in-view > *:nth-child(15) { animation-delay: 1260ms; }
+.scroll-reveal-content.in-view > *:nth-child(16) { animation-delay: 1350ms; }
+
+/* Fade-only on scroll (same duration/easing, no slide): for section titles */
+@keyframes fadeReveal {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.scroll-reveal-content.scroll-reveal-fade > * {
+  opacity: 0;
+  transform: none;
+  animation: fadeReveal 600ms ease-out forwards;
+}
+
+.scroll-reveal-content.scroll-reveal-fade:not(.in-view) > * {
+  animation: none;
+}

@@ -56,7 +56,7 @@ export function ImageCarousel() {
   return (
     <div className="w-full max-w-4xl mx-auto my-6 sm:my-8 md:my-12">
       <div
-        className="relative overflow-hidden rounded-xl sm:rounded-2xl shadow-lg"
+        className="relative overflow-hidden rounded-xl sm:rounded-2xl shadow-lg transition-shadow duration-200 ease-out hover:shadow-xl"
         onTouchStart={onTouchStart}
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
