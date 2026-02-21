@@ -359,7 +359,7 @@ function App() {
         {categories.length === 0 && (
           <div className="bg-blue-50 border border-blue-200 rounded-xl px-3 py-2 text-center max-w-2xl mx-auto mb-4 sm:mb-6 md:mb-8">
             <p className="text-blue-800 text-xs sm:text-sm">
-              Showing demo categories. Run <code className="bg-blue-100 px-1 rounded">supabase db push</code> to use your database and save donations.
+              Showing demo categories. To use your database: add <code className="bg-blue-100 px-1 rounded">VITE_SUPABASE_URL</code> and <code className="bg-blue-100 px-1 rounded">VITE_SUPABASE_ANON_KEY</code> in GitHub → Settings → Secrets → Actions, then run <code className="bg-blue-100 px-1 rounded">supabase db push</code> from your project folder.
             </p>
           </div>
         )}

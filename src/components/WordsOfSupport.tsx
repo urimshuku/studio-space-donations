@@ -10,12 +10,22 @@ interface SupportEntry {
   created_at: string;
 }
 
+// Shown when DB has no words of support yet (e.g. before running supabase db push)
+const FALLBACK_ENTRY: SupportEntry = {
+  id: 'fallback-500',
+  donor_name: 'Anonymous',
+  is_anonymous: true,
+  words_of_support: 'I feel so happy to help you guys!',
+  created_at: '',
+};
+
 export function WordsOfSupport() {
   const [entries, setEntries] = useState<SupportEntry[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!supabase) {
+      setEntries([FALLBACK_ENTRY]);
       setLoading(false);
       return;
     }
@@ -50,7 +60,7 @@ export function WordsOfSupport() {
         (row): row is SupportEntry =>
           typeof row.words_of_support === 'string' && row.words_of_support.trim().length > 0
       );
-      setEntries(list);
+      setEntries(list.length > 0 ? list : [FALLBACK_ENTRY]);
     } catch (error) {
       console.error('Error fetching words of support:', error);
     } finally {
