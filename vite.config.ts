@@ -9,8 +9,9 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // BASE_PATH is set by GitHub Actions for Pages (e.g. /repo-name/). Leave unset for local dev.
 export default defineConfig(({ mode }) => {
   const envDir = __dirname;
-  const env = loadEnv(mode, envDir, 'VITE');
-  if (mode === 'development' && !env.VITE_PAYPAL_CLIENT_ID?.trim()) {
+  const env = loadEnv(mode, envDir, 'VITE_');
+  const paypalClientId = (env.VITE_PAYPAL_CLIENT_ID ?? '').toString().trim();
+  if (mode === 'development' && !paypalClientId) {
     console.warn('[vite] VITE_PAYPAL_CLIENT_ID not found in .env. Add it to .env in the project root and restart.');
   }
   return {
@@ -22,6 +23,9 @@ export default defineConfig(({ mode }) => {
     },
     optimizeDeps: {
       exclude: ['lucide-react'],
+    },
+    define: {
+      'import.meta.env.VITE_PAYPAL_CLIENT_ID': JSON.stringify(paypalClientId),
     },
   };
 });
