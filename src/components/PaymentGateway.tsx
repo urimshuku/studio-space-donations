@@ -12,7 +12,14 @@ interface PaymentGatewayProps {
 const PRESET_AMOUNTS = [10, 20, 50, 100];
 const MAX_WORDS_OF_SUPPORT = 150;
 
-const PAYPAL_CLIENT_ID = String(import.meta.env.VITE_PAYPAL_CLIENT_ID ?? '').trim();
+/** Prefer value injected into index.html (bypasses Vite env); fallback to import.meta.env. */
+function getPaypalClientId(): string {
+  if (typeof window !== 'undefined' && (window as unknown as { __PAYPAL_CLIENT_ID__?: string }).__PAYPAL_CLIENT_ID__) {
+    return String((window as unknown as { __PAYPAL_CLIENT_ID__?: string }).__PAYPAL_CLIENT_ID__).trim();
+  }
+  return String(import.meta.env.VITE_PAYPAL_CLIENT_ID ?? '').trim();
+}
+
 const PAYPAL_CURRENCY = String(import.meta.env.VITE_PAYPAL_CURRENCY ?? 'EUR').trim() || 'EUR';
 
 function PayPalButtonWrapper({
@@ -118,6 +125,7 @@ export function PaymentGateway({ category, onBack, onSuccess }: PaymentGatewayPr
   const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
   const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
+  const PAYPAL_CLIENT_ID = getPaypalClientId();
   if (!PAYPAL_CLIENT_ID) {
     return (
       <div className="max-w-2xl mx-auto px-1 sm:px-0">
