@@ -137,7 +137,7 @@ export function PaymentGateway({ category, onBack, onSuccess }: PaymentGatewayPr
           </p>
           <pre className="mt-2 p-3 bg-gray-100 rounded text-sm overflow-x-auto">VITE_PAYPAL_CLIENT_ID=your_client_id_here</pre>
           <p className="text-sm text-gray-600 mt-2">
-            Get your Client ID from <a href="https://developer.paypal.com/dashboard/" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">developer.paypal.com</a> → Apps &amp; Credentials. Then restart the dev server (<code className="bg-gray-100 px-1 rounded">npm run dev</code>).
+            Get your Client ID from <a href="https://developer.paypal.com/dashboard/" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">developer.paypal.com</a> → Apps &amp; Credentials. Put <code className="bg-gray-100 px-1 rounded">.env</code> in the project root (same folder as <code className="bg-gray-100 px-1 rounded">package.json</code>). No spaces around <code className="bg-gray-100 px-1 rounded">=</code>. Then restart the dev server (<code className="bg-gray-100 px-1 rounded">npm run dev</code>).
           </p>
         </div>
       </div>
