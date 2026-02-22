@@ -19,7 +19,7 @@ const DEFAULT_CATEGORIES: Category[] = [
   {
     id: 'default-general',
     name: 'General Donations',
-    description: 'General support for our studio space. Every euro helps us keep the lights on and the space welcoming.',
+    description: 'General support for our space.',
     target_amount: 0,
     current_amount: 0,
     sort_order: 0,
@@ -88,7 +88,8 @@ function getInitialPage(): Page {
   if (typeof window === 'undefined') return 'home';
   const params = new URLSearchParams(window.location.search);
   const pathname = window.location.pathname;
-  if ((pathname.endsWith('success') || pathname.includes('/success')) && params.get('session_id')) {
+  const isSuccessPath = pathname.endsWith('success') || pathname.includes('/success');
+  if (isSuccessPath && (params.get('session_id') || params.get('paypal'))) {
     return 'success';
   }
   return 'home';
@@ -218,6 +219,8 @@ function App() {
   };
 
   const handlePaymentSuccess = () => {
+    const base = import.meta.env.BASE_URL?.replace(/\/$/, '') || '';
+    window.history.pushState({}, '', `${base}/success?paypal=1`);
     setCurrentPage('success');
   };
 

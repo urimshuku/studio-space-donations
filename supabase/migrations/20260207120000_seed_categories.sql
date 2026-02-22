@@ -7,7 +7,7 @@
 
 INSERT INTO categories (name, description, target_amount, current_amount, sort_order, has_progress_bar)
 VALUES
-  ('General Donations', 'General support for our studio space. Every euro helps us keep the lights on and the space welcoming.', 0, 0, 0, false),
+  ('General Donations', 'General support for our space.', 0, 0, 0, false),
   ('Workshop Tables', 'Tables for workshops and collaborative work in the studio.', 500, 500, 1, true),
   ('Insulation', 'Help us insulate the studio to stay warm in winter and cool in summer.', 2500, 0, 2, true),
   ('Garden', 'Outdoor garden area for breaks and small events.', 500, 0, 3, true),

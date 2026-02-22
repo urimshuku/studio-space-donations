@@ -1,5 +1,6 @@
-import { useState } from 'react';
-import { Lock, ArrowLeft } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { ArrowLeft } from 'lucide-react';
+import { PayPalScriptProvider, PayPalButtons, usePayPalScriptReducer } from '@paypal/react-paypal-js';
 import type { Category } from '../lib/types';
 
 interface PaymentGatewayProps {
@@ -9,6 +10,83 @@ interface PaymentGatewayProps {
 }
 
 const PRESET_AMOUNTS = [10, 20, 50, 100];
+const MAX_WORDS_OF_SUPPORT = 150;
+
+const PAYPAL_CLIENT_ID = import.meta.env.VITE_PAYPAL_CLIENT_ID || '';
+const PAYPAL_CURRENCY = import.meta.env.VITE_PAYPAL_CURRENCY || 'EUR';
+
+function PayPalButtonWrapper({
+  supabaseUrl,
+  supabaseAnonKey,
+  formDataRef,
+  onSuccess,
+}: {
+  supabaseUrl: string;
+  supabaseAnonKey: string;
+  formDataRef: React.MutableRefObject<{ category_id: string; donor_name: string; amount: number; is_anonymous: boolean; words_of_support?: string }>;
+  onSuccess: () => void;
+}) {
+  const [{ isPending, isRejected }] = usePayPalScriptReducer();
+
+  if (isRejected) {
+    return (
+      <p className="text-sm text-red-600">
+        Payment options could not load. Check VITE_PAYPAL_CLIENT_ID in .env and that scripts from paypal.com are not blocked.
+      </p>
+    );
+  }
+
+  if (isPending) {
+    return (
+      <div className="min-h-[120px] flex items-center justify-center rounded-lg border border-gray-200 bg-gray-50">
+        <p className="text-sm text-gray-600">Loading payment options…</p>
+      </div>
+    );
+  }
+
+  return (
+    <PayPalButtons
+      style={{ layout: 'vertical', color: 'gold', shape: 'rect', label: 'paypal' }}
+      createOrder={async () => {
+        const d = formDataRef.current;
+        if (!d || d.amount <= 0) throw new Error('Please select or enter an amount.');
+        if (!d.donor_name && !d.is_anonymous) throw new Error('Please enter your name or check Donate anonymously.');
+        const res = await fetch(`${supabaseUrl.replace(/\/$/, '')}/functions/v1/paypal-create-order`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${supabaseAnonKey}` },
+          body: JSON.stringify({
+            category_id: d.category_id,
+            donor_name: d.donor_name,
+            amount: d.amount,
+            is_anonymous: d.is_anonymous,
+            words_of_support: d.words_of_support,
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data?.error || 'Failed to create order');
+        return data.orderID;
+      }}
+      onApprove={async (data) => {
+        if (!data.orderID) return;
+        const res = await fetch(`${supabaseUrl.replace(/\/$/, '')}/functions/v1/paypal-capture-order`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${supabaseAnonKey}` },
+          body: JSON.stringify({ orderID: data.orderID }),
+        });
+        const result = await res.json();
+        if (!res.ok) throw new Error(result?.error || 'Capture failed');
+        onSuccess();
+        const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
+        const successUrl = `${window.location.origin}${base}/success?paypal=1`;
+        window.location.href = successUrl;
+      }}
+      onError={(err) => {
+        console.error('PayPal error:', err);
+        alert(err?.message || 'Payment failed. Please try again.');
+      }}
+    />
+  );
+}
 
 export function PaymentGateway({ category, onBack, onSuccess }: PaymentGatewayProps) {
   const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
@@ -16,84 +94,48 @@ export function PaymentGateway({ category, onBack, onSuccess }: PaymentGatewayPr
   const [donorName, setDonorName] = useState('');
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [wordsOfSupport, setWordsOfSupport] = useState('');
-  const [processing, setProcessing] = useState(false);
 
-  const MAX_WORDS_OF_SUPPORT = 150;
+  const amount = (selectedAmount ?? parseFloat(customAmount)) || 0;
+  const formValid = amount > 0 && (!!donorName || isAnonymous);
 
-  const amount = selectedAmount || parseFloat(customAmount) || 0;
+  const formDataRef = useRef({
+    category_id: category.id,
+    donor_name: donorName,
+    amount,
+    is_anonymous: isAnonymous,
+    words_of_support: wordsOfSupport.trim().slice(0, MAX_WORDS_OF_SUPPORT) || undefined,
+  });
+  useEffect(() => {
+    formDataRef.current = {
+      category_id: category.id,
+      donor_name: isAnonymous ? 'Anonymous' : donorName,
+      amount,
+      is_anonymous: isAnonymous,
+      words_of_support: wordsOfSupport.trim().slice(0, MAX_WORDS_OF_SUPPORT) || undefined,
+    };
+  }, [category.id, donorName, isAnonymous, wordsOfSupport, amount]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+  const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-    if (amount <= 0) {
-      alert('Please select or enter a valid amount');
-      return;
-    }
-
-    if (!donorName && !isAnonymous) {
-      alert('Please enter your name or donate anonymously');
-      return;
-    }
-
-    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-    const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-    if (!supabaseUrl || !supabaseAnonKey) {
-      alert('Checkout is not configured. Please add Supabase URL and anon key in your environment.');
-      return;
-    }
-
-    setProcessing(true);
-
-    const baseUrl = `${window.location.origin}${import.meta.env.BASE_URL}`.replace(/\/$/, '');
-    const successUrl = `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`;
-    const cancelUrl = `${baseUrl}/`;
-
-    try {
-      const response = await fetch(
-        `${supabaseUrl}/functions/v1/process-donation`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${supabaseAnonKey}`,
-          },
-          body: JSON.stringify({
-            category_id: category.id,
-            donor_name: isAnonymous ? 'Anonymous' : donorName,
-            amount: amount,
-            is_anonymous: isAnonymous,
-            words_of_support: wordsOfSupport.trim().slice(0, MAX_WORDS_OF_SUPPORT) || undefined,
-            success_url: successUrl,
-            cancel_url: cancelUrl,
-          }),
-        }
-      );
-
-      let data: { checkoutUrl?: string; error?: string; message?: string } = {};
-      try {
-        data = await response.json();
-      } catch {
-        // non-JSON response (e.g. 502)
-      }
-
-      if (!response.ok) {
-        const message = data?.error || data?.message || `Server error (${response.status})`;
-        console.error('Process donation error:', response.status, data);
-        throw new Error(message);
-      }
-
-      const redirectUrl = data.checkoutUrl;
-      if (!redirectUrl) {
-        throw new Error(data?.error || 'No checkout URL received');
-      }
-      window.location.href = redirectUrl;
-    } catch (error) {
-      console.error('Payment error:', error);
-      const message = error instanceof Error ? error.message : 'Payment failed. Please try again.';
-      alert(message);
-      setProcessing(false);
-    }
-  };
+  if (!PAYPAL_CLIENT_ID) {
+    return (
+      <div className="max-w-2xl mx-auto px-1 sm:px-0">
+        <button
+          onClick={onBack}
+          className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 sm:mb-6 transition-colors text-sm sm:text-base"
+        >
+          <ArrowLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+          Back to Home
+        </button>
+        <div className="bg-white rounded-xl shadow-xl p-6 border border-gray-100">
+          <p className="text-gray-600">
+            PayPal is not configured. Add <code className="bg-gray-100 px-1 rounded">VITE_PAYPAL_CLIENT_ID</code> to your environment.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-2xl mx-auto px-1 sm:px-0">
@@ -113,7 +155,7 @@ export function PaymentGateway({ category, onBack, onSuccess }: PaymentGatewayPr
           <p className="text-gray-600 text-sm sm:text-base">{category.description}</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           <div>
             <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2 sm:mb-3">
               Select Amount
@@ -214,31 +256,44 @@ export function PaymentGateway({ category, onBack, onSuccess }: PaymentGatewayPr
             </div>
           </div>
 
-          <button
-            type="submit"
-            disabled={processing || amount <= 0}
-            className="w-full text-white font-bold py-3 sm:py-4 px-4 sm:px-6 rounded-lg text-sm sm:text-base transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed flex items-center justify-center gap-2"
-            style={{
-              backgroundColor: processing || amount <= 0 ? '#ccc' : '#c95b2d',
-            }}
-          >
-            {processing ? (
-              <>
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                Processing...
-              </>
-            ) : (
-              <>
-                <Lock className="w-5 h-5" />
-                Proceed to Secure Checkout
-              </>
-            )}
-          </button>
+          {amount > 0 && supabaseUrl && supabaseAnonKey && (
+            <div className="pt-2">
+              <p className="text-xs sm:text-sm font-semibold text-gray-700 mb-2">Pay with PayPal or debit/credit card (€{amount.toFixed(2)})</p>
+              {!formValid && (
+                <p className="text-sm text-amber-600 mb-2">Enter your name or check Donate anonymously, then click a button below to pay.</p>
+              )}
+              <div className="min-h-[120px] flex flex-col gap-2">
+                <PayPalScriptProvider
+                  options={{
+                    clientId: PAYPAL_CLIENT_ID,
+                    currency: PAYPAL_CURRENCY,
+                    intent: 'capture',
+                    enableFunding: 'card',
+                  }}
+                >
+                  <PayPalButtonWrapper
+                    supabaseUrl={supabaseUrl}
+                    supabaseAnonKey={supabaseAnonKey}
+                    formDataRef={formDataRef}
+                    onSuccess={onSuccess}
+                  />
+                </PayPalScriptProvider>
+              </div>
+            </div>
+          )}
+
+          {amount > 0 && (!supabaseUrl || !supabaseAnonKey) && (
+            <p className="text-sm text-amber-600">Configure VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to enable checkout.</p>
+          )}
+
+          {amount <= 0 && (
+            <p className="text-sm text-gray-500 text-center">Select or enter an amount above to see payment options.</p>
+          )}
 
           <p className="text-xs text-center text-gray-500">
-            Payments secured by Stripe. Your donation will be processed securely.
+            Payments secured by PayPal. Your donation will be processed securely.
           </p>
-        </form>
+        </div>
       </div>
     </div>
   );
