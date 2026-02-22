@@ -129,8 +129,15 @@ export function PaymentGateway({ category, onBack, onSuccess }: PaymentGatewayPr
           Back to Home
         </button>
         <div className="bg-white rounded-xl shadow-xl p-6 border border-gray-100">
-          <p className="text-gray-600">
-            PayPal is not configured. Add <code className="bg-gray-100 px-1 rounded">VITE_PAYPAL_CLIENT_ID</code> to your environment.
+          <p className="text-gray-600 mb-2">
+            PayPal is not configured.
+          </p>
+          <p className="text-sm text-gray-600">
+            Add this line to your <code className="bg-gray-100 px-1 rounded">.env</code> file (create it from <code className="bg-gray-100 px-1 rounded">.env.example</code> if needed):
+          </p>
+          <pre className="mt-2 p-3 bg-gray-100 rounded text-sm overflow-x-auto">VITE_PAYPAL_CLIENT_ID=your_client_id_here</pre>
+          <p className="text-sm text-gray-600 mt-2">
+            Get your Client ID from <a href="https://developer.paypal.com/dashboard/" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">developer.paypal.com</a> → Apps &amp; Credentials. Then restart the dev server (<code className="bg-gray-100 px-1 rounded">npm run dev</code>).
           </p>
         </div>
       </div>
