@@ -12,8 +12,8 @@ interface PaymentGatewayProps {
 const PRESET_AMOUNTS = [10, 20, 50, 100];
 const MAX_WORDS_OF_SUPPORT = 150;
 
-const PAYPAL_CLIENT_ID = import.meta.env.VITE_PAYPAL_CLIENT_ID || '';
-const PAYPAL_CURRENCY = import.meta.env.VITE_PAYPAL_CURRENCY || 'EUR';
+const PAYPAL_CLIENT_ID = String(import.meta.env.VITE_PAYPAL_CLIENT_ID ?? '').trim();
+const PAYPAL_CURRENCY = String(import.meta.env.VITE_PAYPAL_CURRENCY ?? 'EUR').trim() || 'EUR';
 
 function PayPalButtonWrapper({
   supabaseUrl,
