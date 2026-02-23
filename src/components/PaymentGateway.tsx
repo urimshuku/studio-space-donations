@@ -441,6 +441,7 @@ export function PaymentGateway({ category, onBack, onSuccess }: PaymentGatewayPr
                     currency: PAYPAL_CURRENCY,
                     intent: 'capture',
                     components: 'buttons,card-fields',
+                    disableFunding: 'card',
                   }}
                 >
                   <PayPalButtonWrapper
