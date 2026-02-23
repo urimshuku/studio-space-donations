@@ -79,6 +79,19 @@ The SDK will then allow paying with a card without a PayPal account where suppor
 
 ---
 
+## Billing address on card payments
+
+Orders are created with **`NO_SHIPPING`** so PayPal does not ask for a shipping address. The **debit/credit card** form (when the payer chooses “Debit or Credit Card”) is fully controlled by PayPal. If it still shows a “Billing address” section (country, name, ZIP, phone), that comes from PayPal’s hosted form and **cannot be turned off via our API** in this integration.
+
+To see if you can reduce or hide it on your account:
+
+- In **PayPal Developer** → your app or **Studio** → Checkout / Advanced integration, look for an option like **“Handle billing address”** or similar and turn it off if available.
+- In your **PayPal business account**: **Settings** → **Website payments** → **Preferences** and check for any billing or address display options.
+
+If no option exists for your product type or region, the only way to fully control card fields (including omitting billing) would be to switch to [Advanced Credit and Debit Card](https://developer.paypal.com/docs/checkout/advanced/integrate/) (hosted card fields), which is a different integration.
+
+---
+
 ## Troubleshooting: "Client Authentication failed" (401)
 
 If you see **`PayPal auth failed: 401 {"error":"invalid_client"...}`** when clicking the PayPal or card button, the **backend** (Supabase Edge Functions) is using credentials PayPal rejects.
