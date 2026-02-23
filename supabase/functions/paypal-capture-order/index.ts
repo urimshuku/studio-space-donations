@@ -7,8 +7,8 @@ const corsHeaders = {
 };
 
 async function getPayPalAccessToken(): Promise<string> {
-  const clientId = Deno.env.get("PAYPAL_CLIENT_ID");
-  const secret = Deno.env.get("PAYPAL_CLIENT_SECRET");
+  const clientId = (Deno.env.get("PAYPAL_CLIENT_ID") ?? "").trim();
+  const secret = (Deno.env.get("PAYPAL_CLIENT_SECRET") ?? "").trim();
   if (!clientId || !secret) throw new Error("Missing PAYPAL_CLIENT_ID or PAYPAL_CLIENT_SECRET");
 
   const base = Deno.env.get("PAYPAL_SANDBOX") === "true"

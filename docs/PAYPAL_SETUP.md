@@ -76,3 +76,22 @@ The workflow already passes this into the build, so the deployed app will get th
 - Turn **PayPal account optional** to **On**.
 
 The SDK will then allow paying with a card without a PayPal account where supported.
+
+---
+
+## Troubleshooting: "Client Authentication failed" (401)
+
+If you see **`PayPal auth failed: 401 {"error":"invalid_client"...}`** when clicking the PayPal or card button, the **backend** (Supabase Edge Functions) is using credentials PayPal rejects.
+
+1. **Same app, same environment**  
+   In Supabase → Project Settings → Edge Functions → Secrets set:
+   - `PAYPAL_CLIENT_ID` = the **exact same** Client ID as your frontend (`VITE_PAYPAL_CLIENT_ID`).
+   - `PAYPAL_CLIENT_SECRET` = the **Secret** for that same app (developer.paypal.com → Apps & Credentials → your app → Show secret).
+
+2. **Sandbox vs Live**  
+   - Using a **Sandbox** app (testing): set secret **`PAYPAL_SANDBOX`** = **`true`**.
+   - Using a **Live** app: do not set `PAYPAL_SANDBOX` or set it to `false`.  
+   Frontend and backend must both be Sandbox or both Live.
+
+3. **Redeploy after changing secrets**  
+   Run: `supabase functions deploy paypal-create-order` and `supabase functions deploy paypal-capture-order`.
