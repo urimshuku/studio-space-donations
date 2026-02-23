@@ -51,9 +51,12 @@ Create the pending-donations table and deploy the PayPal functions:
 supabase db push
 supabase functions deploy paypal-create-order
 supabase functions deploy paypal-capture-order
+supabase functions deploy paypal-client-token
 ```
 
 Then set the secrets (see above).
+
+The **paypal-client-token** function is used for **PayPal Advanced Card Payments (Hosted Fields)**. It returns a client token so the frontend can render card number, expiry, and CVV in PCI-compliant hosted iframes; cardholder name and email are collected with native form inputs. No billing address is requested by default.
 
 ---
 
