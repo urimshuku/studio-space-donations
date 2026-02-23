@@ -1,6 +1,16 @@
 import { useState, useRef, useEffect } from 'react';
 import { ArrowLeft } from 'lucide-react';
-import { PayPalScriptProvider, PayPalButtons, usePayPalScriptReducer } from '@paypal/react-paypal-js';
+import {
+  PayPalScriptProvider,
+  PayPalButtons,
+  usePayPalScriptReducer,
+  PayPalCardFieldsProvider,
+  PayPalNameField,
+  PayPalNumberField,
+  PayPalExpiryField,
+  PayPalCVVField,
+  usePayPalCardFields,
+} from '@paypal/react-paypal-js';
 import type { Category } from '../lib/types';
 
 interface PaymentGatewayProps {
@@ -92,6 +102,153 @@ function PayPalButtonWrapper({
         alert(err?.message || 'Payment failed. Please try again.');
       }}
     />
+  );
+}
+
+const CARD_FIELD_STYLE = {
+  'font-size': '16px',
+  'font-family': 'system-ui, sans-serif',
+  'font-weight': '400',
+  color: '#1a1a1a',
+  'input': {
+    'font-size': '16px',
+  },
+};
+
+function CardFieldsSection({
+  supabaseUrl,
+  supabaseAnonKey,
+  formDataRef,
+  onSuccess,
+}: {
+  supabaseUrl: string;
+  supabaseAnonKey: string;
+  formDataRef: React.MutableRefObject<{ category_id: string; donor_name: string; amount: number; is_anonymous: boolean; words_of_support?: string }>;
+  onSuccess: () => void;
+}) {
+  const [cardSubmitDisabled, setCardSubmitDisabled] = useState(false);
+  const [contactEmail, setContactEmail] = useState('');
+
+  const createOrderFn = async (): Promise<string> => {
+    const d = formDataRef.current;
+    if (!d || d.amount <= 0) throw new Error('Please select or enter an amount.');
+    if (!d.donor_name && !d.is_anonymous) throw new Error('Please enter your name or check Donate anonymously.');
+    const res = await fetch(`${supabaseUrl.replace(/\/$/, '')}/functions/v1/paypal-create-order`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${supabaseAnonKey}` },
+      body: JSON.stringify({
+        category_id: d.category_id,
+        donor_name: d.donor_name,
+        amount: d.amount,
+        is_anonymous: d.is_anonymous,
+        words_of_support: d.words_of_support,
+      }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data?.error || 'Failed to create order');
+    return data.orderID;
+  };
+
+  const onApproveFn = async (data: { orderID?: string }) => {
+    if (!data.orderID) return;
+    const res = await fetch(`${supabaseUrl.replace(/\/$/, '')}/functions/v1/paypal-capture-order`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${supabaseAnonKey}` },
+      body: JSON.stringify({ orderID: data.orderID }),
+    });
+    const result = await res.json();
+    if (!res.ok) throw new Error(result?.error || 'Capture failed');
+    onSuccess();
+    const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
+    const successUrl = `${window.location.origin}${base}/success?paypal=1`;
+    window.location.href = successUrl;
+  };
+
+  return (
+    <PayPalCardFieldsProvider
+      createOrder={createOrderFn}
+      onApprove={onApproveFn}
+      onError={(err) => {
+        console.error('Card fields error:', err);
+        alert(typeof err === 'object' && err && 'message' in err ? String((err as { message: string }).message) : 'Payment failed. Please try again.');
+      }}
+    >
+      <CardFieldsFormInner
+        contactEmail={contactEmail}
+        setContactEmail={setContactEmail}
+        cardSubmitDisabled={cardSubmitDisabled}
+        setCardSubmitDisabled={setCardSubmitDisabled}
+      />
+    </PayPalCardFieldsProvider>
+  );
+}
+
+function CardFieldsFormInner({
+  contactEmail,
+  setContactEmail,
+  cardSubmitDisabled,
+  setCardSubmitDisabled,
+}: {
+  contactEmail: string;
+  setContactEmail: (v: string) => void;
+  cardSubmitDisabled: boolean;
+  setCardSubmitDisabled: (v: boolean) => void;
+}) {
+  const { cardFields } = usePayPalCardFields();
+
+  const handleSubmit = () => {
+    if (!cardFields || typeof cardFields.submit !== 'function') return;
+    setCardSubmitDisabled(true);
+    cardFields
+      .submit()
+      .then(() => {})
+      .catch((err) => {
+        console.error(err);
+        setCardSubmitDisabled(false);
+      });
+  };
+
+  return (
+    <div className="rounded-lg border border-gray-200 bg-gray-50/50 p-4 space-y-4">
+      <p className="text-sm font-semibold text-gray-700">Pay with debit or credit card</p>
+      <div>
+        <label className="block text-xs font-medium text-gray-600 mb-1">Email (optional)</label>
+        <input
+          type="email"
+          value={contactEmail}
+          onChange={(e) => setContactEmail(e.target.value)}
+          placeholder="your@email.com"
+          className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        />
+      </div>
+      <div>
+        <label className="block text-xs font-medium text-gray-600 mb-1">Name on card</label>
+        <PayPalNameField style={CARD_FIELD_STYLE} placeholder="Name on card" />
+      </div>
+      <div>
+        <label className="block text-xs font-medium text-gray-600 mb-1">Card number</label>
+        <PayPalNumberField style={CARD_FIELD_STYLE} placeholder="4111 1111 1111 1111" />
+      </div>
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <label className="block text-xs font-medium text-gray-600 mb-1">Expiry</label>
+          <PayPalExpiryField style={CARD_FIELD_STYLE} placeholder="MM/YY" />
+        </div>
+        <div>
+          <label className="block text-xs font-medium text-gray-600 mb-1">CSC</label>
+          <PayPalCVVField style={CARD_FIELD_STYLE} placeholder="123" />
+        </div>
+      </div>
+      <button
+        type="button"
+        onClick={handleSubmit}
+        disabled={cardSubmitDisabled}
+        className="w-full py-3 px-4 rounded-lg font-semibold text-white transition-opacity disabled:opacity-50"
+        style={{ backgroundColor: '#c95b2d' }}
+      >
+        {cardSubmitDisabled ? 'Processing…' : 'Pay with card'}
+      </button>
+    </div>
   );
 }
 
@@ -275,15 +432,15 @@ export function PaymentGateway({ category, onBack, onSuccess }: PaymentGatewayPr
             <div className="pt-2">
               <p className="text-xs sm:text-sm font-semibold text-gray-700 mb-2">Pay with PayPal or debit/credit card (€{amount.toFixed(2)})</p>
               {!formValid && (
-                <p className="text-sm text-amber-600 mb-2">Enter your name or check Donate anonymously, then click a button below to pay.</p>
+                <p className="text-sm text-amber-600 mb-2">Enter your name or check Donate anonymously, then use one of the options below to pay.</p>
               )}
-              <div className="min-h-[120px] flex flex-col gap-2">
+              <div className="min-h-[120px] flex flex-col gap-4">
                 <PayPalScriptProvider
                   options={{
                     clientId: PAYPAL_CLIENT_ID,
                     currency: PAYPAL_CURRENCY,
                     intent: 'capture',
-                    enableFunding: 'card',
+                    components: 'buttons,card-fields',
                   }}
                 >
                   <PayPalButtonWrapper
@@ -292,6 +449,14 @@ export function PaymentGateway({ category, onBack, onSuccess }: PaymentGatewayPr
                     formDataRef={formDataRef}
                     onSuccess={onSuccess}
                   />
+                  <div className="mt-2">
+                    <CardFieldsSection
+                      supabaseUrl={supabaseUrl}
+                      supabaseAnonKey={supabaseAnonKey}
+                      formDataRef={formDataRef}
+                      onSuccess={onSuccess}
+                    />
+                  </div>
                 </PayPalScriptProvider>
               </div>
             </div>
