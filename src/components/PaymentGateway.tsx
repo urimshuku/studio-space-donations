@@ -441,7 +441,6 @@ export function PaymentGateway({ category, onBack, onSuccess }: PaymentGatewayPr
                     currency: PAYPAL_CURRENCY,
                     intent: 'capture',
                     components: 'buttons,card-fields',
-                    disableFunding: 'card',
                   }}
                 >
                   <PayPalButtonWrapper
@@ -450,7 +449,8 @@ export function PaymentGateway({ category, onBack, onSuccess }: PaymentGatewayPr
                     formDataRef={formDataRef}
                     onSuccess={onSuccess}
                   />
-                  <div className="mt-2">
+                  <p className="text-xs text-gray-600 mt-1">Or pay by card below — no billing address required.</p>
+                  <div className="mt-1">
                     <CardFieldsSection
                       supabaseUrl={supabaseUrl}
                       supabaseAnonKey={supabaseAnonKey}
