@@ -57,6 +57,19 @@ Then set the secrets (see above).
 
 ---
 
+## GitHub Pages (and other CI builds)
+
+The repo builds the frontend on **GitHub Actions** and deploys to GitHub Pages. There is **no `.env` file on GitHub**; your local `.env` is never uploaded.
+
+To have PayPal work on the **live site**, add the same value as a **repository secret**:
+
+1. On GitHub: **Settings** → **Secrets and variables** → **Actions**.
+2. Add a secret named **`VITE_PAYPAL_CLIENT_ID`** with your PayPal Client ID (same as in `.env` locally).
+
+The workflow already passes this into the build, so the deployed app will get the client ID and the “PayPal is not configured” message will go away. If the secret is missing, the build will fail with a clear error so you know to add it.
+
+---
+
 ## Guest checkout (pay by card without PayPal login)
 
 - In your **PayPal account**: **Account settings** → **Website payments** → **Website preferences**.

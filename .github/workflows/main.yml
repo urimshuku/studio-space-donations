@@ -35,13 +35,18 @@ jobs:
             echo "::error::Missing secrets. In this repo go to Settings → Secrets and variables → Actions and add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY (exact names)."
             exit 1
           fi
-          echo "Supabase secrets are set."
+          if [ -z "${{ secrets.VITE_PAYPAL_CLIENT_ID }}" ]; then
+            echo "::error::Missing VITE_PAYPAL_CLIENT_ID. Add it in Settings → Secrets and variables → Actions (get from developer.paypal.com → Apps & Credentials)."
+            exit 1
+          fi
+          echo "Secrets are set."
 
       - name: Build
         env:
           BASE_PATH: /studio-space-donations/
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          VITE_PAYPAL_CLIENT_ID: ${{ secrets.VITE_PAYPAL_CLIENT_ID }}
         run: npm run build
 
       - name: Fix SPA routing for GitHub Pages
