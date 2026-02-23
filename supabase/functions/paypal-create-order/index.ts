@@ -96,6 +96,9 @@ Deno.serve(async (req: Request) => {
       },
       body: JSON.stringify({
         intent: "CAPTURE",
+        application_context: {
+          shipping_preference: "NO_SHIPPING",
+        },
         purchase_units: [
           {
             amount: { currency_code: currency, value: valueStr },
