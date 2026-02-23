@@ -11,10 +11,18 @@ async function getPayPalAccessToken(): Promise<string> {
   const secret = (Deno.env.get("PAYPAL_CLIENT_SECRET") ?? "").trim();
   if (!clientId || !secret) throw new Error("Missing PAYPAL_CLIENT_ID or PAYPAL_CLIENT_SECRET");
 
-  const base = Deno.env.get("PAYPAL_SANDBOX") === "true"
+  const isSandbox = Deno.env.get("PAYPAL_SANDBOX") === "true";
+  const base = isSandbox
     ? "https://api-m.sandbox.paypal.com"
     : "https://api-m.paypal.com";
-  const auth = btoa(`${clientId}:${secret}`);
+
+  // Base64(UTF-8(clientId:secret)) — btoa() only handles Latin1
+  const credentials = `${clientId}:${secret}`;
+  const bytes = new TextEncoder().encode(credentials);
+  let binary = "";
+  for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+  const auth = btoa(binary);
+
   const res = await fetch(`${base}/v1/oauth2/token`, {
     method: "POST",
     headers: {
@@ -25,6 +33,11 @@ async function getPayPalAccessToken(): Promise<string> {
   });
   if (!res.ok) {
     const t = await res.text();
+    console.error(
+      "PayPal auth failed. Using Sandbox:",
+      isSandbox,
+      "— Check PAYPAL_CLIENT_ID and PAYPAL_CLIENT_SECRET match the same app and PAYPAL_SANDBOX matches (true for Sandbox app)."
+    );
     throw new Error(`PayPal auth failed: ${res.status} ${t}`);
   }
   const data = await res.json();
@@ -58,7 +71,8 @@ Deno.serve(async (req: Request) => {
     }
 
     const accessToken = await getPayPalAccessToken();
-    const base = Deno.env.get("PAYPAL_SANDBOX") === "true"
+    const isSandbox = Deno.env.get("PAYPAL_SANDBOX") === "true";
+    const base = isSandbox
       ? "https://api-m.sandbox.paypal.com"
       : "https://api-m.paypal.com";
 
