@@ -99,13 +99,6 @@ Deno.serve(async (req: Request) => {
         application_context: {
           shipping_preference: "NO_SHIPPING",
         },
-        payment_source: {
-          paypal: {
-            experience_context: {
-              shipping_preference: "NO_SHIPPING",
-            },
-          },
-        },
         purchase_units: [
           {
             amount: { currency_code: currency, value: valueStr },
