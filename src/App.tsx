@@ -3,6 +3,7 @@ import { Share2 } from 'lucide-react';
 import { Header } from './components/Header';
 import { PaymentGateway } from './components/PaymentGateway';
 import { SuccessPage } from './components/SuccessPage';
+import { CancelPage } from './components/CancelPage';
 import { AllDonors } from './components/AllDonors';
 import { WordsOfSupport } from './components/WordsOfSupport';
 import { ImageCarousel } from './components/ImageCarousel';
@@ -12,7 +13,7 @@ import { Footer } from './components/Footer';
 import { supabase } from './lib/supabase';
 import type { Category } from './lib/types';
 
-type Page = 'home' | 'payment' | 'success';
+type Page = 'home' | 'payment' | 'success' | 'cancel';
 
 // Default categories when Supabase returns none (used on first load or if DB is empty)
 const DEFAULT_CATEGORIES: Category[] = [
@@ -89,9 +90,8 @@ function getInitialPage(): Page {
   const params = new URLSearchParams(window.location.search);
   const pathname = window.location.pathname;
   const isSuccessPath = pathname.endsWith('success') || pathname.includes('/success');
-  if (isSuccessPath && (params.get('session_id') || params.get('paypal'))) {
-    return 'success';
-  }
+  if (isSuccessPath && params.get('paysera')) return 'success';
+  if (pathname.endsWith('cancel') || pathname.includes('/cancel')) return 'cancel';
   return 'home';
 }
 
@@ -219,8 +219,8 @@ function App() {
   };
 
   const handlePaymentSuccess = () => {
-    const base = import.meta.env.BASE_URL?.replace(/\/$/, '') || '';
-    window.history.pushState({}, '', `${base}/success?paypal=1`);
+    const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
+    window.history.pushState({}, '', `${base}/success?paysera=1`);
     setCurrentPage('success');
   };
 
@@ -305,6 +305,10 @@ function App() {
 
   if (currentPage === 'success') {
     return <SuccessPage onBackHome={handleBackHome} />;
+  }
+
+  if (currentPage === 'cancel') {
+    return <CancelPage onBackHome={handleBackHome} />;
   }
 
   if (currentPage === 'payment' && selectedCategory) {
