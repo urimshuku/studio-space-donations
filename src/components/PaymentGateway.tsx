@@ -147,7 +147,7 @@ export function PaymentGateway({ category, onBack, onSuccess }: PaymentGatewayPr
         <div className="space-y-4 sm:space-y-6">
           <div>
             <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2 sm:mb-3">
-              Donation amount
+              Donation Amount
             </label>
             <div className="grid grid-cols-4 gap-2 sm:gap-3 mb-2 sm:mb-3">
               {PRESET_AMOUNTS.map((preset) => (
@@ -193,7 +193,7 @@ export function PaymentGateway({ category, onBack, onSuccess }: PaymentGatewayPr
 
           <div>
             <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2">
-              Your name
+              Your Name
             </label>
             <input
               type="text"
@@ -217,7 +217,7 @@ export function PaymentGateway({ category, onBack, onSuccess }: PaymentGatewayPr
 
           <div>
             <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2">
-              Email address <span className="text-red-500">*</span>
+              Email Address <span className="text-red-500">*</span>
             </label>
             <input
               type="email"
@@ -232,7 +232,7 @@ export function PaymentGateway({ category, onBack, onSuccess }: PaymentGatewayPr
 
           <div>
             <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2">
-              Words of support <span className="text-gray-500 font-normal">(optional)</span>
+              Words of Support <span className="text-gray-500 font-normal">(optional)</span>
             </label>
             <textarea
               value={wordsOfSupport}
@@ -250,7 +250,7 @@ export function PaymentGateway({ category, onBack, onSuccess }: PaymentGatewayPr
 
           <div className="bg-blue-50 border border-blue-100 rounded-lg p-3 sm:p-4">
             <div className="flex justify-between items-center text-xs sm:text-sm mb-1">
-              <span className="text-gray-600">Donation amount:</span>
+              <span className="text-gray-600">Donation Amount:</span>
               <span className="font-semibold text-gray-900">€{amount.toFixed(2)}</span>
             </div>
             <div className="flex justify-between items-center">
