@@ -4,6 +4,10 @@ import { Header } from './components/Header';
 import { PaymentGateway } from './components/PaymentGateway';
 import { SuccessPage } from './components/SuccessPage';
 import { CancelPage } from './components/CancelPage';
+import { EntryChoice } from './components/EntryChoice';
+import { ActivitiesPage } from './components/ActivitiesPage';
+import { BookingPage } from './components/BookingPage';
+import { VenuePage } from './components/VenuePage';
 import { AllDonors } from './components/AllDonors';
 import { WordsOfSupport } from './components/WordsOfSupport';
 import { ImageCarousel } from './components/ImageCarousel';
@@ -13,7 +17,7 @@ import { Footer } from './components/Footer';
 import { supabase } from './lib/supabase';
 import type { Category } from './lib/types';
 
-type Page = 'home' | 'payment' | 'success' | 'cancel';
+type Page = 'entry' | 'home' | 'payment' | 'success' | 'cancel' | 'activities' | 'booking' | 'venue';
 
 // Default categories when Supabase returns none (used on first load or if DB is empty)
 const DEFAULT_CATEGORIES: Category[] = [
@@ -85,14 +89,27 @@ const DEFAULT_CATEGORIES: Category[] = [
   },
 ];
 
-function getInitialPage(): Page {
-  if (typeof window === 'undefined') return 'home';
+function getPageFromPathname(): Page {
+  if (typeof window === 'undefined') return 'entry';
   const params = new URLSearchParams(window.location.search);
-  const pathname = window.location.pathname;
+  const pathname = window.location.pathname.replace(/\/$/, '') || '/';
+  const basePath = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
+  const baseFull = basePath ? `/${basePath}` : '/';
+  const isBase = pathname === baseFull || pathname === baseFull + '/' || (baseFull === '/' && pathname === '/');
   const isSuccessPath = pathname.endsWith('success') || pathname.includes('/success');
   if (isSuccessPath && params.get('paysera')) return 'success';
   if (pathname.endsWith('cancel') || pathname.includes('/cancel')) return 'cancel';
+  if (pathname.includes('/book')) return 'booking';
+  if (pathname.includes('studio-space-activities')) return 'activities';
+  if (pathname.includes('studio-space-venue')) return 'venue';
+  if (pathname.includes('/donations')) return 'home';
+  if (isBase && params.get('donate')) return 'home';
+  if (isBase) return 'entry';
   return 'home';
+}
+
+function getInitialPage(): Page {
+  return getPageFromPathname();
 }
 
 function App() {
@@ -137,6 +154,56 @@ function App() {
     }
   }, [currentPage]);
 
+  // Sync page with browser back/forward
+  useEffect(() => {
+    const onPopState = () => setCurrentPage(getPageFromPathname());
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, []);
+
+  const basePath = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
+  const baseFull = basePath ? `/${basePath}` : '/';
+  const donationsPath = `${baseFull}${baseFull === '/' ? '' : '/'}donations`;
+  const activitiesPath = `${baseFull}${baseFull === '/' ? '' : '/'}studio-space-activities`;
+  const bookPath = `${baseFull}${baseFull === '/' ? '' : '/'}book`;
+  const venuePath = `${baseFull}${baseFull === '/' ? '' : '/'}studio-space-venue`;
+
+  const handleBookNow = () => {
+    window.history.pushState({}, '', bookPath);
+    setCurrentPage('booking');
+    window.scrollTo(0, 0);
+  };
+
+  const handleChooseDonations = () => {
+    window.history.pushState({}, '', donationsPath);
+    setCurrentPage('home');
+    window.scrollTo(0, 0);
+  };
+
+  const handleChooseActivities = () => {
+    window.history.pushState({}, '', activitiesPath);
+    setCurrentPage('activities');
+    window.scrollTo(0, 0);
+  };
+
+  const handleChooseVenue = () => {
+    window.history.pushState({}, '', venuePath);
+    setCurrentPage('venue');
+    window.scrollTo(0, 0);
+  };
+
+  const handleBackToEntry = () => {
+    window.history.pushState({}, '', baseFull || '/');
+    setCurrentPage('entry');
+    window.scrollTo(0, 0);
+  };
+
+  const handleBackToVenue = () => {
+    window.history.pushState({}, '', venuePath);
+    setCurrentPage('venue');
+    window.scrollTo(0, 0);
+  };
+
   // Open payment for a category when visiting a shared link (?donate=categoryId)
   useEffect(() => {
     if (loading) return;
@@ -149,9 +216,9 @@ function App() {
     if (category) {
       setSelectedCategory(category);
       setCurrentPage('payment');
-      window.history.replaceState({}, '', window.location.pathname || '/');
+      window.history.replaceState({}, '', donationsPath);
     }
-  }, [loading, categories]);
+  }, [loading, categories, donationsPath]);
 
   async function fetchCategories() {
     if (!supabase) return;
@@ -303,6 +370,18 @@ function App() {
     );
   }
 
+  if (currentPage === 'activities') {
+    return <ActivitiesPage onBackToEntry={handleBackToEntry} />;
+  }
+
+  if (currentPage === 'venue') {
+    return <VenuePage onBackToEntry={handleBackToEntry} onBookNow={handleBookNow} />;
+  }
+
+  if (currentPage === 'booking') {
+    return <BookingPage onBackToEntry={handleBackToVenue} />;
+  }
+
   if (currentPage === 'success') {
     return <SuccessPage onBackHome={handleBackHome} />;
   }
@@ -329,9 +408,20 @@ function App() {
     );
   }
 
+  if (currentPage === 'entry') {
+    return (
+      <EntryChoice
+        onChooseActivities={handleChooseActivities}
+        onChooseDonations={handleChooseDonations}
+        onChooseVenue={handleChooseVenue}
+        onBookNow={handleBookNow}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      <Header selectedTab={selectedTab} onTabChange={handleTabChange} onGoHome={handleGoHome} onDonateNow={handleDonateNow} />
+      <Header selectedTab={selectedTab} onTabChange={handleTabChange} onGoHome={handleGoHome} onDonateNow={handleDonateNow} onBackToEntry={handleBackToEntry} />
       <div className="flex-1">
       <div className="max-w-7xl mx-auto px-3 pt-10 pb-6 sm:px-4 sm:pt-12 sm:pb-8 md:pt-16 md:pb-12">
         <div className="mb-6 sm:mb-8 md:mb-12 text-center">
@@ -341,9 +431,6 @@ function App() {
             </h1>
           </ScrollReveal>
           <ScrollReveal className="space-y-3 sm:space-y-4 max-w-3xl mx-auto">
-            <p className="text-base sm:text-lg text-gray-600">
-              Studio Space is a small community hub where people gather for connection, creative unfolding, and meaningful dialogue.
-            </p>
             <p className="text-base sm:text-lg text-gray-600">
               Until now, Studio Space has been run by volunteers, and most gatherings have been offered free of charge. The space now needs renovations so it can continue to exist, grow, and welcome people safely.
             </p>

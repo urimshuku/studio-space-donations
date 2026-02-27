@@ -1,7 +1,7 @@
 /*
   # Insert the €500 anonymous donation so it shows in the Donors list
 
-  Run this only if the donation was never recorded (e.g. no Stripe webhook).
+  Run this only if the donation was never recorded (e.g. payment callback did not run).
   Uses the category named 'Essentials' (or 'A/C').
 */
 

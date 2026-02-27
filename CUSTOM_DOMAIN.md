@@ -247,4 +247,4 @@ Or use: https://dnschecker.org — enter your domain and check CNAME (subdomain)
 - [ ] **Part 5:** Wait for DNS and certificate; then open `https://your-domain.com` and test.
 - [ ] **Part 6:** If something doesn’t work, use the troubleshooting table above.
 
-After this, your custom URL will show your site, and the existing app (including Stripe redirects) will work on that URL without any code changes.
+After this, your custom URL will show your site, and the existing app (including checkout redirects) will work on that URL without any code changes.

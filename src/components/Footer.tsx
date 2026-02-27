@@ -16,11 +16,11 @@ export function Footer() {
             <a
               href={import.meta.env.BASE_URL || '/'}
               className="flex-shrink-0"
-              aria-label="Studio Space Donations home"
+              aria-label="Studio Space home"
             >
               <img
-                src={`${import.meta.env.BASE_URL}logo.svg?v=2`}
-                alt="Studio Space Donations logo"
+                src={`${import.meta.env.BASE_URL}logo-entry.svg`}
+                alt="Studio Space logo"
                 className="h-12 sm:h-16 md:h-20 w-auto"
               />
             </a>
@@ -42,7 +42,7 @@ export function Footer() {
               <span className="footer-link-underline text-right">
                 M55H+CGH, Ymer Prizreni Rd, 10000
               </span>
-              <MapPin className="w-3.5 h-3.5 sm:w-5 sm:h-5 flex-shrink-0" style={{ color: '#c95b2d' }} aria-hidden />
+              <MapPin className="w-3.5 h-3.5 sm:w-5 sm:h-5 flex-shrink-0 text-black" aria-hidden />
             </a>
 
             {/* Phone */}
@@ -51,7 +51,7 @@ export function Footer() {
               className="flex items-center gap-1.5 sm:gap-2 text-gray-600 hover:text-gray-900 transition-colors text-xs sm:text-sm md:text-base"
             >
               <span className="footer-link-underline">{PHONE_DISPLAY}</span>
-              <Phone className="w-3.5 h-3.5 sm:w-5 sm:h-5 flex-shrink-0" style={{ color: '#c95b2d' }} aria-hidden />
+              <Phone className="w-3.5 h-3.5 sm:w-5 sm:h-5 flex-shrink-0 text-black" aria-hidden />
             </a>
 
             {/* Instagram */}
@@ -62,7 +62,7 @@ export function Footer() {
               className="flex items-center gap-1.5 sm:gap-2 text-gray-600 hover:text-gray-900 transition-colors text-xs sm:text-sm md:text-base"
             >
               <span className="footer-link-underline">Follow us on Instagram</span>
-              <Instagram className="w-3.5 h-3.5 sm:w-5 sm:h-5 flex-shrink-0" style={{ color: '#c95b2d' }} aria-hidden />
+              <Instagram className="w-3.5 h-3.5 sm:w-5 sm:h-5 flex-shrink-0 text-black" aria-hidden />
             </a>
           </div>
         </div>

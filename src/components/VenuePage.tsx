@@ -1,0 +1,89 @@
+import { Header } from './Header';
+import { Footer } from './Footer';
+import { ScrollReveal } from './ScrollReveal';
+
+interface VenuePageProps {
+  onBackToEntry: () => void;
+  onBookNow?: () => void;
+}
+
+// Reuse the same placeholder image as the entry page intro
+const INTRO_IMAGE = 'https://placehold.co/1200x680/e5e7eb/9ca3af?text=Studio+Space';
+
+export function VenuePage({ onBackToEntry, onBookNow }: VenuePageProps) {
+  return (
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      <Header
+        selectedTab="General Donations"
+        onTabChange={() => {}}
+        onGoHome={onBackToEntry}
+        onBackToEntry={onBackToEntry}
+        onBookNow={onBookNow}
+        logoVariant="venue"
+      />
+      <div className="flex-1">
+        {/* Introduction */}
+        <section
+          className="max-w-7xl mx-auto px-3 pt-10 pb-6 sm:px-4 sm:pt-12 sm:pb-8 md:pt-16 md:pb-12"
+          aria-labelledby="venue-intro-heading"
+        >
+          <ScrollReveal className="max-w-3xl mx-auto text-center space-y-6 sm:space-y-8">
+            <h1
+              id="venue-intro-heading"
+              className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900"
+            >
+              Studio Space — The Space
+            </h1>
+            <p className="text-base sm:text-lg text-gray-600 leading-relaxed">
+              A place for presence. Where people gather with intention, in openness, to meet one another and what
+              moves in them. Not a venue — a space that holds silence and speech, stillness and exchange.
+            </p>
+            <div className="mt-8 sm:mt-10 md:mt-12">
+              <img
+                src={INTRO_IMAGE}
+                alt="The studio space"
+                className="w-full aspect-[16/9] sm:aspect-[3/2] object-cover rounded-xl sm:rounded-2xl border border-gray-100"
+              />
+            </div>
+          </ScrollReveal>
+        </section>
+
+        {/* Story */}
+        <section
+          className="max-w-7xl mx-auto px-3 pt-10 sm:px-4 sm:pt-12 md:pt-16 pb-6 sm:pb-8 md:pb-12"
+          aria-labelledby="venue-story-heading"
+        >
+          <ScrollReveal>
+            <div className="w-8 sm:w-10 h-1 rounded-full bg-gray-300 mb-6 sm:mb-8" aria-hidden />
+            <h2
+              id="venue-story-heading"
+              className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6 sm:mb-8"
+            >
+              The Story
+            </h2>
+            <div className="max-w-3xl space-y-4 sm:space-y-5 text-base sm:text-lg text-gray-600 leading-relaxed">
+              <p>
+                Studio Space began from a simple need: a room where people could come together without an agenda. A
+                place that wasn’t a café, an office, or a performance hall — somewhere in between, where the only
+                requirement was to show up.
+              </p>
+              <p>
+                It exists because we believe that gathering matters. That sitting in a circle, reading together,
+                watching a film, or simply sharing silence can change how we see ourselves and each other. The space
+                doesn’t promise outcomes; it offers presence.
+              </p>
+              <p>
+                What it stands for is straightforward: openness over exclusivity, intention over habit, and care for
+                the place itself. The walls, the light, the way the room holds sound — all of it is part of the
+                invitation. Studio Space is run by people who care for it, and it continues because others choose to
+                show up and care too.
+              </p>
+            </div>
+          </ScrollReveal>
+        </section>
+      </div>
+      <Footer />
+    </div>
+  );
+}
+

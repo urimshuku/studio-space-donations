@@ -27,7 +27,7 @@ html {
   animation: fadeIn 0.6s ease-out both;
 }
 
-/* Footer links: underline from left to right on hover (text only, orange) */
+/* Footer links: underline from left to right on hover (text only, black) */
 .footer-link-underline {
   position: relative;
 }
@@ -38,7 +38,7 @@ html {
   bottom: 0;
   width: 100%;
   height: 1px;
-  background: #c95b2d;
+  background: #000;
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 0.4s ease;
