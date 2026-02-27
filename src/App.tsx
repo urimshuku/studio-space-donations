@@ -88,13 +88,32 @@ const DEFAULT_CATEGORIES: Category[] = [
   },
 ];
 
+/** Compute the effective base path at runtime (handles GitHub Pages subfolder deployments). */
+function getBaseFull(): string {
+  const basePath = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
+  let baseFull = basePath ? `/${basePath}` : '/';
+
+  // If Vite base is root but app is served from a subfolder (e.g. GitHub Pages /repo-name),
+  // derive base from the first path segment.
+  if (baseFull === '/' && typeof window !== 'undefined') {
+    const parts = window.location.pathname.split('/').filter(Boolean);
+    if (parts.length > 0) {
+      baseFull = `/${parts[0]}`;
+    }
+  }
+
+  return baseFull;
+}
+
 function getPageFromPathname(): Page {
   if (typeof window === 'undefined') return 'entry';
   const params = new URLSearchParams(window.location.search);
   const pathname = window.location.pathname.replace(/\/$/, '') || '/';
-  const basePath = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
-  const baseFull = basePath ? `/${basePath}` : '/';
-  const isBase = pathname === baseFull || pathname === baseFull + '/' || (baseFull === '/' && pathname === '/');
+  const baseFull = getBaseFull();
+  const isBase =
+    pathname === baseFull ||
+    pathname === baseFull + '/' ||
+    (baseFull === '/' && pathname === '/');
   const isSuccessPath = pathname.endsWith('success') || pathname.includes('/success');
   if (isSuccessPath && params.get('paysera')) return 'success';
   if (pathname.endsWith('cancel') || pathname.includes('/cancel')) return 'cancel';
@@ -160,8 +179,7 @@ function App() {
     return () => window.removeEventListener('popstate', onPopState);
   }, []);
 
-  const basePath = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
-  const baseFull = basePath ? `/${basePath}` : '/';
+  const baseFull = getBaseFull();
   const donationsPath = `${baseFull}${baseFull === '/' ? '' : '/'}donations`;
   const activitiesPath = `${baseFull}${baseFull === '/' ? '' : '/'}studio-space-activities`;
   const bookPath = `${baseFull}${baseFull === '/' ? '' : '/'}book`;
