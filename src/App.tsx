@@ -90,8 +90,10 @@ const DEFAULT_CATEGORIES: Category[] = [
 
 /** Compute the effective base path at runtime (handles GitHub Pages subfolder deployments). */
 function getBaseFull(): string {
-  const basePath = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
-  let baseFull = basePath ? `/${basePath}` : '/';
+  const rawBase = import.meta.env.BASE_URL || '/';
+  // Strip leading and trailing slashes so we don't accidentally double-prefix.
+  const cleaned = rawBase.replace(/^\/+|\/+$/g, '');
+  let baseFull = cleaned ? `/${cleaned}` : '/';
 
   // If Vite base is root but app is served from a subfolder (e.g. GitHub Pages /repo-name),
   // derive base from the first path segment.
