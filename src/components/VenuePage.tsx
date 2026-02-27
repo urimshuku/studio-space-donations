@@ -1,5 +1,6 @@
 import { Header } from './Header';
 import { Footer } from './Footer';
+import { FooterQuote } from './FooterQuote';
 import { ScrollReveal } from './ScrollReveal';
 
 interface VenuePageProps {
@@ -17,16 +18,30 @@ export function VenuePage({ onBackToEntry, onBookNow }: VenuePageProps) {
         selectedTab="General Donations"
         onTabChange={() => {}}
         onGoHome={onBackToEntry}
-        onBackToEntry={onBackToEntry}
         onBookNow={onBookNow}
         logoVariant="venue"
       />
       <div className="flex-1">
         {/* Introduction */}
         <section
-          className="max-w-7xl mx-auto px-3 pt-10 pb-6 sm:px-4 sm:pt-12 sm:pb-8 md:pt-16 md:pb-12"
+          className="max-w-7xl mx-auto px-3 pt-6 pb-6 sm:px-4 sm:pt-8 sm:pb-8 md:pt-10 md:pb-12"
           aria-labelledby="venue-intro-heading"
         >
+          <button
+            type="button"
+            onClick={() => {
+              onBackToEntry();
+              window.scrollTo(0, 0);
+            }}
+            className="mb-4 sm:mb-6 inline-flex items-center justify-center p-0 bg-transparent border-0 cursor-pointer hover:opacity-80 transition-opacity"
+            aria-label="Back to Home"
+          >
+            <img
+              src={`${(import.meta.env.BASE_URL || '/').replace(/\/$/, '')}/arrow-back.svg`}
+              alt=""
+              className="w-6 h-6 sm:w-7 sm:h-7 object-contain block"
+            />
+          </button>
           <ScrollReveal className="max-w-3xl mx-auto text-center space-y-6 sm:space-y-8">
             <h1
               id="venue-intro-heading"
@@ -38,11 +53,11 @@ export function VenuePage({ onBackToEntry, onBookNow }: VenuePageProps) {
               A place for presence. Where people gather with intention, in openness, to meet one another and what
               moves in them. Not a venue — a space that holds silence and speech, stillness and exchange.
             </p>
-            <div className="mt-8 sm:mt-10 md:mt-12">
+            <div className="mt-8 sm:mt-10 md:mt-12 overflow-hidden rounded-xl sm:rounded-2xl shadow-lg transition-shadow duration-200 ease-out hover:shadow-xl">
               <img
                 src={INTRO_IMAGE}
                 alt="The studio space"
-                className="w-full aspect-[16/9] sm:aspect-[3/2] object-cover rounded-xl sm:rounded-2xl border border-gray-100"
+                className="w-full aspect-[16/9] sm:aspect-[3/2] object-cover border border-gray-100"
               />
             </div>
           </ScrollReveal>
@@ -54,7 +69,7 @@ export function VenuePage({ onBackToEntry, onBookNow }: VenuePageProps) {
           aria-labelledby="venue-story-heading"
         >
           <ScrollReveal>
-            <div className="w-8 sm:w-10 h-1 rounded-full bg-gray-300 mb-6 sm:mb-8" aria-hidden />
+            <div className="w-8 sm:w-10 h-1 rounded-full mb-6 sm:mb-8" style={{ backgroundColor: '#d5a220' }} aria-hidden />
             <h2
               id="venue-story-heading"
               className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6 sm:mb-8"
@@ -81,6 +96,8 @@ export function VenuePage({ onBackToEntry, onBookNow }: VenuePageProps) {
             </div>
           </ScrollReveal>
         </section>
+
+        <FooterQuote color="#d5a220" />
       </div>
       <Footer />
     </div>

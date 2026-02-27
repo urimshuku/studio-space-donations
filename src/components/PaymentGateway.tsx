@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from 'react';
-import { ArrowLeft } from 'lucide-react';
 import type { Category } from '../lib/types';
 
 interface PaymentGatewayProps {
@@ -110,10 +109,14 @@ export function PaymentGateway({ category, onBack, onSuccess }: PaymentGatewayPr
       <div className="max-w-2xl mx-auto px-1 sm:px-0">
         <button
           onClick={onBack}
-          className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 sm:mb-6 transition-colors text-sm sm:text-base"
+          className="mb-4 sm:mb-6 inline-flex items-center justify-center p-0 bg-transparent border-0 cursor-pointer hover:opacity-80 transition-opacity"
+          aria-label="Back to Home"
         >
-          <ArrowLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-          Back to Home
+          <img
+            src={`${(import.meta.env.BASE_URL || '/').replace(/\/$/, '')}/arrow-back.svg`}
+            alt=""
+            className="w-6 h-6 sm:w-7 sm:h-7 object-contain block"
+          />
         </button>
         <div className="bg-white rounded-xl shadow-xl p-6 border border-gray-100">
           <p className="text-gray-600 mb-2">Checkout is not configured.</p>
@@ -130,10 +133,14 @@ export function PaymentGateway({ category, onBack, onSuccess }: PaymentGatewayPr
     <div className="max-w-2xl mx-auto px-1 sm:px-0">
       <button
         onClick={onBack}
-        className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 sm:mb-6 transition-colors text-sm sm:text-base"
+        className="mb-4 sm:mb-6 inline-flex items-center justify-center p-0 bg-transparent border-0 cursor-pointer hover:opacity-80 transition-opacity"
+        aria-label="Back to Home"
       >
-        <ArrowLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-        Back to Home
+        <img
+          src={`${(import.meta.env.BASE_URL || '/').replace(/\/$/, '')}/arrow-back.svg`}
+          alt=""
+          className="w-6 h-6 sm:w-7 sm:h-7 object-contain block"
+        />
       </button>
 
       <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-6 md:p-8 border border-gray-100">

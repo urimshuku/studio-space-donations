@@ -3,7 +3,12 @@ import { useState, useEffect, useRef } from 'react';
 const QUOTE = 'Thank you for being part of making this space continue to exist and grow.';
 const CHAR_DELAY_MS = 25;
 
-export function FooterQuote() {
+interface FooterQuoteProps {
+  /** Text and heart color. Default: donations orange (#c95b2d). Use #d5a220 for venue. */
+  color?: string;
+}
+
+export function FooterQuote({ color = '#c95b2d' }: FooterQuoteProps) {
   const [charIndex, setCharIndex] = useState(0);
   const [showHeart, setShowHeart] = useState(false);
   const [started, setStarted] = useState(false);
@@ -48,13 +53,13 @@ export function FooterQuote() {
         <div className="max-w-3xl mx-auto px-3">
           <p
             className="text-2xl sm:text-[1.65rem] md:text-[1.65rem] lg:text-[1.65rem] max-w-3xl mx-auto"
-            style={{ color: '#c95b2d', fontFamily: "'Reenie Beanie', cursive" }}
+            style={{ color, fontFamily: "'Reenie Beanie', cursive" }}
           >
             {QUOTE.slice(0, charIndex)}
             {charIndex < QUOTE.length && (
               <span
                 className="inline-block w-0.5 h-[1em] align-baseline ml-0.5 animate-pulse"
-                style={{ backgroundColor: '#c95b2d' }}
+                style={{ backgroundColor: color }}
                 aria-hidden
               />
             )}
@@ -69,7 +74,7 @@ export function FooterQuote() {
             >
               <path
                 d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-                fill="#c95b2d"
+                fill={color}
               />
             </svg>
           )}

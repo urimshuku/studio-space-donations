@@ -12,7 +12,6 @@ import { AllDonors } from './components/AllDonors';
 import { WordsOfSupport } from './components/WordsOfSupport';
 import { ImageCarousel } from './components/ImageCarousel';
 import { ScrollReveal } from './components/ScrollReveal';
-import { FooterQuote } from './components/FooterQuote';
 import { Footer } from './components/Footer';
 import { supabase } from './lib/supabase';
 import type { Category } from './lib/types';
@@ -421,9 +420,24 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      <Header selectedTab={selectedTab} onTabChange={handleTabChange} onGoHome={handleGoHome} onDonateNow={handleDonateNow} onBackToEntry={handleBackToEntry} />
+      <Header selectedTab={selectedTab} onTabChange={handleTabChange} onGoHome={handleGoHome} onDonateNow={handleDonateNow} />
       <div className="flex-1">
-      <div className="max-w-7xl mx-auto px-3 pt-10 pb-6 sm:px-4 sm:pt-12 sm:pb-8 md:pt-16 md:pb-12">
+      <div className="max-w-7xl mx-auto px-3 pt-6 pb-6 sm:px-4 sm:pt-8 sm:pb-8 md:pt-10 md:pb-12">
+        <button
+          type="button"
+          onClick={() => {
+            handleBackToEntry();
+            window.scrollTo(0, 0);
+          }}
+          className="mb-4 sm:mb-6 inline-flex items-center justify-center p-0 bg-transparent border-0 cursor-pointer hover:opacity-80 transition-opacity"
+          aria-label="Back to Home"
+        >
+          <img
+            src={`${(import.meta.env.BASE_URL || '/').replace(/\/$/, '')}/arrow-back.svg`}
+            alt=""
+            className="w-6 h-6 sm:w-7 sm:h-7 object-contain block"
+          />
+        </button>
         <div className="mb-6 sm:mb-8 md:mb-12 text-center">
           <ScrollReveal fadeOnly>
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4 sm:mb-6 md:mb-8">
@@ -570,7 +584,7 @@ function App() {
                 </h2>
                 <p className="text-gray-600 text-sm sm:text-base">{generalCategory.description}</p>
               </div>
-              <div>
+              <div className="mt-3 sm:mt-4">
                 <p className="text-xs sm:text-sm text-gray-600 mb-1 sm:mb-2">Total Raised</p>
                 <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">
                   €{generalCategory.current_amount.toLocaleString()}
@@ -604,8 +618,6 @@ function App() {
         <section className="mt-10 sm:mt-12 md:mt-16">
           <WordsOfSupport />
         </section>
-
-        <FooterQuote />
       </div>
       </div>
       <Footer />

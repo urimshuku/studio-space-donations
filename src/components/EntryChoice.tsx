@@ -21,7 +21,7 @@ export function EntryChoice({ onChooseActivities, onChooseDonations, onChooseVen
         <button
           type="button"
           onClick={onChooseVenue}
-          className="flex flex-col items-center justify-center min-h-[200px] sm:min-h-[240px] md:min-h-[280px] p-6 sm:p-8 md:p-12 bg-white border border-gray-200 rounded-xl sm:rounded-2xl shadow-md transition-all duration-200 hover:shadow-xl hover:border-gray-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gray-400 text-gray-900"
+          className="entry-card-animate flex flex-col items-center justify-center min-h-[200px] sm:min-h-[240px] md:min-h-[280px] p-6 sm:p-8 md:p-12 bg-white border border-gray-200 rounded-xl sm:rounded-2xl shadow-md transition-all duration-200 hover:shadow-xl hover:border-gray-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gray-400 text-gray-900"
           aria-label="Go to Studio Space Venue"
         >
           <img
@@ -34,7 +34,7 @@ export function EntryChoice({ onChooseActivities, onChooseDonations, onChooseVen
         <button
           type="button"
           onClick={onChooseActivities}
-          className="flex flex-col items-center justify-center min-h-[200px] sm:min-h-[240px] md:min-h-[280px] p-6 sm:p-8 md:p-12 bg-white border border-gray-200 rounded-xl sm:rounded-2xl shadow-md transition-all duration-200 hover:shadow-xl hover:border-gray-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gray-400 text-gray-900"
+          className="entry-card-animate flex flex-col items-center justify-center min-h-[200px] sm:min-h-[240px] md:min-h-[280px] p-6 sm:p-8 md:p-12 bg-white border border-gray-200 rounded-xl sm:rounded-2xl shadow-md transition-all duration-200 hover:shadow-xl hover:border-gray-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gray-400 text-gray-900"
           aria-label="Go to Studio Space Activities"
         >
           <img
@@ -47,7 +47,7 @@ export function EntryChoice({ onChooseActivities, onChooseDonations, onChooseVen
         <button
           type="button"
           onClick={onChooseDonations}
-          className="flex flex-col items-center justify-center min-h-[200px] sm:min-h-[240px] md:min-h-[280px] p-6 sm:p-8 md:p-12 bg-white border border-gray-200 rounded-xl sm:rounded-2xl shadow-md transition-all duration-200 hover:shadow-xl hover:border-gray-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gray-400 text-gray-900"
+          className="entry-card-animate flex flex-col items-center justify-center min-h-[200px] sm:min-h-[240px] md:min-h-[280px] p-6 sm:p-8 md:p-12 bg-white border border-gray-200 rounded-xl sm:rounded-2xl shadow-md transition-all duration-200 hover:shadow-xl hover:border-gray-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gray-400 text-gray-900"
           aria-label="Go to Studio Space Donations"
         >
           <img

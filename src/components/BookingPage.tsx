@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { Header } from './Header';
 import { Footer } from './Footer';
 import { BookingCalendar } from './BookingCalendar';
-import { ArrowLeft } from 'lucide-react';
 
 interface BookingPageProps {
+  /** Used for header logo and "Back to Home" link — navigates to venue page */
   onBackToEntry: () => void;
 }
 
@@ -40,22 +40,29 @@ export function BookingPage({ onBackToEntry }: BookingPageProps) {
         selectedTab="General Donations"
         onTabChange={() => {}}
         onGoHome={onBackToEntry}
-        logoVariant="entry"
+        logoVariant="venue"
       />
       <div className="flex-1">
-        <div className="max-w-2xl mx-auto px-3 sm:px-4 py-8 sm:py-12 md:py-16">
+        <div className="max-w-2xl mx-auto px-3 sm:px-4 pt-6 pb-8 sm:pt-8 sm:pb-12 md:pt-10 md:pb-16">
           <button
             type="button"
-            onClick={onBackToEntry}
-            className="mb-4 sm:mb-6 inline-flex items-center gap-1.5 text-gray-500 hover:text-gray-800 text-sm sm:text-base transition-colors"
+            onClick={() => {
+              onBackToEntry();
+              window.scrollTo(0, 0);
+            }}
+            className="mb-4 sm:mb-6 inline-flex items-center justify-center p-0 bg-transparent border-0 cursor-pointer hover:opacity-80 transition-opacity"
+            aria-label="Back to Home"
           >
-            <ArrowLeft className="w-4 h-4" aria-hidden />
-            <span>Back to Home</span>
+            <img
+              src={`${(import.meta.env.BASE_URL || '/').replace(/\/$/, '')}/arrow-back.svg`}
+              alt=""
+              className="w-6 h-6 sm:w-7 sm:h-7 object-contain block"
+            />
           </button>
 
           <div className="bg-white rounded-xl sm:rounded-2xl shadow-md p-4 sm:p-6 md:p-8 border border-gray-100 space-y-4 sm:space-y-6">
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
-              Book the space
+              Book the Space
             </h1>
             <p className="text-gray-600 text-base sm:text-lg">
               Choose your date(s), activity, and group size. We’ll get back to you to confirm.
@@ -183,9 +190,9 @@ export function BookingPage({ onBackToEntry }: BookingPageProps) {
               <button
                 type="submit"
                 className="px-5 py-2.5 rounded-lg font-semibold text-white transition-all duration-200 shadow-md hover:shadow-lg"
-                style={{ backgroundColor: '#000' }}
+                style={{ backgroundColor: '#d5a220' }}
               >
-                Send booking request
+                Send request
               </button>
             </div>
           </form>
