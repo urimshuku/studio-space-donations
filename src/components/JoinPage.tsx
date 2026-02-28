@@ -80,7 +80,7 @@ export function JoinPage({ onBackToActivities }: JoinPageProps) {
                   onBackToActivities();
                   window.scrollTo(0, 0);
                 }}
-                className="mb-4 sm:mb-6 inline-flex items-center justify-center p-0 bg-transparent border-0 cursor-pointer hover:opacity-80 transition-opacity"
+                className="mb-4 sm:mb-6 -ml-1 inline-flex items-center justify-center p-0 bg-transparent border-0 cursor-pointer hover:opacity-80 transition-opacity"
                 aria-label="Back to Activities"
               >
                 <img
