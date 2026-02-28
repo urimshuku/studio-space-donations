@@ -82,7 +82,7 @@ GitHub must know that your repo’s GitHub Pages site is allowed to serve at you
 
 ### Step 3.1 – Open repo Settings
 
-1. Go to: **https://github.com/urimshuku/studio-space-donations**
+1. Go to: **https://github.com/urimshuku/studio-space**
 2. Click the **Settings** tab (top menu of the repo).
 
 ### Step 3.2 – Open Pages settings
