@@ -4,6 +4,7 @@ import { Header } from './Header';
 import { Footer } from './Footer';
 import { ScrollReveal } from './ScrollReveal';
 import { scrollToTopEaseOut } from '../lib/scrollToTop';
+import { EntryDotsCanvas } from './EntryDotsCanvas';
 
 interface ActivitiesPageProps {
   onBackToEntry: () => void;
@@ -12,7 +13,9 @@ interface ActivitiesPageProps {
 
 export function ActivitiesPage({ onBackToEntry, onJoinNow }: ActivitiesPageProps) {
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-gray-50 flex flex-col relative">
+      <EntryDotsCanvas mouse={null} />
+      <div className="relative z-10 flex flex-col flex-1 min-h-0">
       <Header
         selectedTab="General Donations"
         onTabChange={() => {}}
@@ -115,6 +118,7 @@ export function ActivitiesPage({ onBackToEntry, onJoinNow }: ActivitiesPageProps
       </div>
 
       <Footer />
+      </div>
     </div>
   );
 }
