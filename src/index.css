@@ -143,3 +143,5 @@ a:hover .footer-link-underline::after {
 .entry-card-animate:nth-child(1) { animation-delay: 0ms; }
 .entry-card-animate:nth-child(2) { animation-delay: 80ms; }
 .entry-card-animate:nth-child(3) { animation-delay: 160ms; }
+
+/* Entry page dots: canvas-based in EntryDotsCanvas; prefers-reduced-motion handled in JS */

@@ -480,7 +480,7 @@ function App() {
           <img
             src={`${(import.meta.env.BASE_URL || '/').replace(/\/$/, '')}/arrow-back.svg`}
             alt=""
-            className="w-6 h-6 sm:w-7 sm:h-7 object-contain block"
+            className="w-6 h-6 sm:w-7 sm:h-7 object-contain block opacity-50"
           />
         </button>
         <div className="mb-6 sm:mb-8 md:mb-12 text-center">
