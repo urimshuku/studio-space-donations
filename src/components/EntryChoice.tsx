@@ -21,12 +21,12 @@ export function EntryChoice({ onChooseActivities, onChooseDonations, onChooseVen
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 sm:p-6 md:p-8">
-      {/* Mobile: horizontal scroll row; md+: 3-column grid */}
-      <div className="w-full max-w-5xl flex flex-row overflow-x-auto gap-4 pb-2 md:overflow-visible md:flex-none md:grid md:grid-cols-3 md:gap-8 snap-x snap-mandatory md:snap-none">
+      {/* Mobile: three cards in one row (no scroll); md+: 3-column grid */}
+      <div className="w-full max-w-5xl flex flex-row gap-2 sm:gap-4 md:grid md:grid-cols-3 md:gap-8">
         <button
           type="button"
           onClick={onChooseVenue}
-          className={`${cardClass} flex-shrink-0 min-w-[200px] md:min-w-0 snap-center`}
+          className={`${cardClass} flex-1 min-w-0 md:flex-none md:min-w-0`}
           aria-label="Go to Studio Space Venue"
         >
           <img src={logoVenueUrl} alt="Studio Space Venue" className={logoClass} />
@@ -35,7 +35,7 @@ export function EntryChoice({ onChooseActivities, onChooseDonations, onChooseVen
         <button
           type="button"
           onClick={onChooseActivities}
-          className={`${cardClass} flex-shrink-0 min-w-[200px] md:min-w-0 snap-center`}
+          className={`${cardClass} flex-1 min-w-0 md:flex-none md:min-w-0`}
           aria-label="Go to Studio Space Activities"
         >
           <img src={logoActivitiesUrl} alt="Studio Space Activities" className={logoClass} />
@@ -44,7 +44,7 @@ export function EntryChoice({ onChooseActivities, onChooseDonations, onChooseVen
         <button
           type="button"
           onClick={onChooseDonations}
-          className={`${cardClass} flex-shrink-0 min-w-[200px] md:min-w-0 snap-center`}
+          className={`${cardClass} flex-1 min-w-0 md:flex-none md:min-w-0`}
           aria-label="Go to Studio Space Donations"
         >
           <img src={logoDonationsUrl} alt="Studio Space Donations" className={logoClass} />
