@@ -5,9 +5,9 @@ function easeOutCubic(t: number): number {
 
 /**
  * Scroll the window to the top with an ease-out animation.
- * @param durationMs - Animation duration in milliseconds (default 600)
+ * @param durationMs - Animation duration in milliseconds (default 1400)
  */
-export function scrollToTopEaseOut(durationMs = 600): void {
+export function scrollToTopEaseOut(durationMs = 1400): void {
   const start = window.scrollY;
   if (start <= 0) return;
   const startTime = performance.now();

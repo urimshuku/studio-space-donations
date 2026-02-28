@@ -18,7 +18,7 @@ export function VenuePage({ onBackToEntry, onBookNow }: VenuePageProps) {
       <Header
         selectedTab="General Donations"
         onTabChange={() => {}}
-        onLogoClick={scrollToTopEaseOut}
+        onLogoClick={() => scrollToTopEaseOut(550)}
         onBookNow={onBookNow}
         logoVariant="venue"
       />

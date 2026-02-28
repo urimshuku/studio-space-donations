@@ -40,7 +40,7 @@ export function BookingPage({ onBackToEntry }: BookingPageProps) {
       <Header
         selectedTab="General Donations"
         onTabChange={() => {}}
-        onLogoClick={scrollToTopEaseOut}
+        onLogoClick={() => scrollToTopEaseOut(550)}
         logoVariant="venue"
       />
       <div className="flex-1">
