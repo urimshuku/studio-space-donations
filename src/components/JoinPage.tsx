@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Header } from './Header';
 import { Footer } from './Footer';
 import { scrollToTopEaseOut } from '../lib/scrollToTop';
@@ -14,8 +14,18 @@ export function JoinPage({ onBackToActivities }: JoinPageProps) {
   const [contact, setContact] = useState('');
   const [futureActivities, setFutureActivities] = useState('');
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const resetTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const SUCCESS_DURATION_MS = 4000;
 
   const unclickableActivityIds = new Set(['films-documentaries', 'spiritual-events']);
+
+  useEffect(() => {
+    return () => {
+      if (resetTimeoutRef.current) clearTimeout(resetTimeoutRef.current);
+    };
+  }, []);
 
   const toggleActivity = (id: string) => {
     setSelectedIds((prev) => {
@@ -28,14 +38,26 @@ export function JoinPage({ onBackToActivities }: JoinPageProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return;
     console.log({
       fullName,
       contact,
       activities: Array.from(selectedIds),
       futureActivities: futureActivities || undefined,
     });
-    alert('Thank you! We’ll be in touch soon.');
-    onBackToActivities();
+    setIsSubmitting(true);
+    setIsSuccess(true);
+    setFullName('');
+    setContact('');
+    setFutureActivities('');
+    setSelectedIds(new Set());
+
+    if (resetTimeoutRef.current) clearTimeout(resetTimeoutRef.current);
+    resetTimeoutRef.current = setTimeout(() => {
+      setIsSuccess(false);
+      setIsSubmitting(false);
+      resetTimeoutRef.current = null;
+    }, SUCCESS_DURATION_MS);
   };
 
   const activities: ActivitySection[] = ACTIVITIES;
@@ -70,7 +92,7 @@ export function JoinPage({ onBackToActivities }: JoinPageProps) {
 
               <div className="bg-white rounded-xl sm:rounded-2xl shadow-md w-full border border-gray-200 p-4 sm:p-6 md:p-8">
             <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
-              Join an activity
+              Join an Activity
             </h1>
             <p className="text-gray-600 text-sm sm:text-base mb-6">
               Choose the activities you’d like to join and tell us your name. We’ll get back to you.
@@ -153,13 +175,14 @@ export function JoinPage({ onBackToActivities }: JoinPageProps) {
                 />
               </fieldset>
 
-              <div className="pt-2 flex justify-center">
+              <div className="pt-2 flex flex-col items-center justify-center">
                 <button
                   type="submit"
-                  className="w-full sm:w-auto px-4 py-2.5 rounded-lg text-white font-bold transition-all duration-200 shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#4DA1A9]"
-                  style={{ backgroundColor: '#4DA1A9' }}
+                  disabled={isSubmitting}
+                  className="flex items-center justify-center gap-2 w-full sm:w-auto px-4 py-2.5 rounded-lg text-white font-bold shadow-md min-h-[44px] disabled:cursor-default focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#4DA1A9] transition-colors duration-300 ease-out"
+                  style={{ backgroundColor: isSuccess ? '#9ca3af' : '#4DA1A9' }}
                 >
-                  Send request
+                {isSuccess ? '✓ Sent' : 'Send request'}
                 </button>
               </div>
             </form>

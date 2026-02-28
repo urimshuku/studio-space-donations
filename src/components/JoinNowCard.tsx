@@ -41,7 +41,7 @@ export function JoinNowCard({ activities, onClose }: JoinNowCardProps) {
       <div className="p-4 sm:p-6 md:p-8">
           <div className="flex items-center justify-between gap-4 mb-6">
             <h2 id="join-now-title" className="text-xl sm:text-2xl font-bold text-gray-900">
-              Join an activity
+              Join an Activity
             </h2>
             <button
               type="button"

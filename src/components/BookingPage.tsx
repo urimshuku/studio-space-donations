@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Header } from './Header';
 import { Footer } from './Footer';
 import { BookingCalendar } from './BookingCalendar';
@@ -18,9 +18,20 @@ export function BookingPage({ onBackToEntry }: BookingPageProps) {
   const [activityType, setActivityType] = useState('');
   const [groupSize, setGroupSize] = useState('');
   const [additionalRequests, setAdditionalRequests] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const resetTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const SUCCESS_DURATION_MS = 4000;
+
+  useEffect(() => {
+    return () => {
+      if (resetTimeoutRef.current) clearTimeout(resetTimeoutRef.current);
+    };
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return;
     // Placeholder: in a real app you would send to an API
     console.log({
       selectedDates,
@@ -32,7 +43,23 @@ export function BookingPage({ onBackToEntry }: BookingPageProps) {
       groupSize: groupSize ? Number(groupSize) : undefined,
       additionalRequests: additionalRequests || undefined,
     });
-    alert('Booking request received. We’ll be in touch soon.');
+    setIsSubmitting(true);
+    setIsSuccess(true);
+    setSelectedDates([]);
+    setName('');
+    setStartTime('');
+    setEndTime('');
+    setContact('');
+    setActivityType('');
+    setGroupSize('');
+    setAdditionalRequests('');
+
+    if (resetTimeoutRef.current) clearTimeout(resetTimeoutRef.current);
+    resetTimeoutRef.current = setTimeout(() => {
+      setIsSuccess(false);
+      setIsSubmitting(false);
+      resetTimeoutRef.current = null;
+    }, SUCCESS_DURATION_MS);
   };
 
   return (
@@ -81,7 +108,7 @@ export function BookingPage({ onBackToEntry }: BookingPageProps) {
                   onChange={setSelectedDates}
                 />
               </div>
-              <div className="mt-3 flex flex-col sm:flex-row gap-3">
+              <div className="mt-3 flex flex-row gap-3">
                 <div className="flex-1">
                   <label htmlFor="booking-start-time" className="block text-sm font-medium text-gray-700 mb-1">
                     Start time
@@ -187,13 +214,14 @@ export function BookingPage({ onBackToEntry }: BookingPageProps) {
               />
             </div>
 
-            <div className="flex flex-wrap justify-center gap-3 pt-2">
+            <div className="flex flex-col items-center justify-center gap-0 pt-2">
               <button
                 type="submit"
-                className="px-5 py-2.5 rounded-lg font-semibold text-white transition-all duration-200 shadow-md hover:shadow-lg"
-                style={{ backgroundColor: '#d5a220' }}
+                disabled={isSubmitting}
+                className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-white shadow-md min-w-[140px] min-h-[44px] disabled:cursor-default transition-colors duration-300 ease-out"
+                style={{ backgroundColor: isSuccess ? '#9ca3af' : '#d5a220' }}
               >
-                Send request
+                {isSuccess ? '✓ Sent' : 'Send request'}
               </button>
             </div>
           </form>
