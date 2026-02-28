@@ -20,8 +20,8 @@ export function EntryChoice({ onChooseActivities, onChooseDonations, onChooseVen
   const logoClass = 'h-16 sm:h-20 md:h-24 w-auto object-contain flex-shrink-0';
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 sm:p-6 md:p-8">
-      {/* Mobile: three cards in one row (no scroll); md+: 3-column grid */}
+    <div className="h-screen overflow-hidden md:min-h-screen md:overflow-visible bg-gray-50 flex items-center justify-center p-4 sm:p-6 md:p-8">
+      {/* Mobile: three cards in one row, centered, no vertical scroll; md+: 3-column grid */}
       <div className="w-full max-w-5xl flex flex-row gap-2 sm:gap-4 md:grid md:grid-cols-3 md:gap-8">
         <button
           type="button"
