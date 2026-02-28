@@ -1,4 +1,5 @@
 import { Heart, Calendar } from 'lucide-react';
+import { scrollToTopEaseOut } from '../lib/scrollToTop';
 
 interface HeaderProps {
   selectedTab: string;
@@ -17,6 +18,8 @@ interface HeaderProps {
    * - 'venue' → Studio Space Venue logo
    */
   logoVariant?: 'donations' | 'activities' | 'entry' | 'venue';
+  /** When provided, called on logo click instead of default home/scroll (e.g. scroll to top on current page) */
+  onLogoClick?: () => void;
 }
 
 const LOGO_URLS: Record<NonNullable<HeaderProps['logoVariant']>, string> = {
@@ -26,7 +29,7 @@ const LOGO_URLS: Record<NonNullable<HeaderProps['logoVariant']>, string> = {
   venue: 'logo-venue.svg',
 };
 
-export function Header({ selectedTab, onTabChange, onGoHome, onDonateNow, onBookNow, onJoinNow, logoVariant = 'donations' }: HeaderProps) {
+export function Header({ selectedTab, onTabChange, onGoHome, onDonateNow, onBookNow, onJoinNow, logoVariant = 'donations', onLogoClick }: HeaderProps) {
   const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
   const logoUrl = `${base}/${LOGO_URLS[logoVariant]}`;
   const logoAlt =
@@ -40,9 +43,13 @@ export function Header({ selectedTab, onTabChange, onGoHome, onDonateNow, onBook
 
   const handleLogoClick = (e: React.MouseEvent) => {
     e.preventDefault();
+    if (onLogoClick) {
+      onLogoClick();
+      return;
+    }
     onTabChange('General Donations');
     onGoHome?.();
-    window.scrollTo(0, 0);
+    scrollToTopEaseOut();
   };
 
   return (

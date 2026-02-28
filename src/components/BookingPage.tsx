@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Header } from './Header';
 import { Footer } from './Footer';
 import { BookingCalendar } from './BookingCalendar';
+import { scrollToTopEaseOut } from '../lib/scrollToTop';
 
 interface BookingPageProps {
   /** Used for header logo and "Back to Home" link — navigates to venue page */
@@ -39,7 +40,7 @@ export function BookingPage({ onBackToEntry }: BookingPageProps) {
       <Header
         selectedTab="General Donations"
         onTabChange={() => {}}
-        onGoHome={onBackToEntry}
+        onLogoClick={scrollToTopEaseOut}
         logoVariant="venue"
       />
       <div className="flex-1">

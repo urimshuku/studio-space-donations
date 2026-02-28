@@ -14,6 +14,7 @@ import { ImageCarousel } from './components/ImageCarousel';
 import { ScrollReveal } from './components/ScrollReveal';
 import { Footer } from './components/Footer';
 import { supabase } from './lib/supabase';
+import { scrollToTopEaseOut } from './lib/scrollToTop';
 import type { Category } from './lib/types';
 
 type Page = 'entry' | 'home' | 'payment' | 'success' | 'cancel' | 'activities' | 'booking' | 'venue';
@@ -412,7 +413,7 @@ function App() {
   if (currentPage === 'payment' && selectedCategory) {
     return (
       <div className="min-h-screen bg-gray-50 flex flex-col">
-        <Header selectedTab={selectedTab} onTabChange={handleTabChange} onGoHome={handleGoHome} onDonateNow={handleDonateNow} />
+        <Header selectedTab={selectedTab} onTabChange={handleTabChange} onLogoClick={scrollToTopEaseOut} onDonateNow={handleDonateNow} />
         <div className="flex-1 pb-12 overflow-x-hidden">
           <div className="mt-4 sm:mt-6 md:mt-8 pt-2 sm:pt-4 px-3 sm:px-4">
             <PaymentGateway
@@ -440,7 +441,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      <Header selectedTab={selectedTab} onTabChange={handleTabChange} onGoHome={handleGoHome} onDonateNow={handleDonateNow} />
+      <Header selectedTab={selectedTab} onTabChange={handleTabChange} onLogoClick={scrollToTopEaseOut} onDonateNow={handleDonateNow} />
       <div className="flex-1">
       <div className="max-w-7xl mx-auto px-3 pt-6 pb-6 sm:px-4 sm:pt-8 sm:pb-8 md:pt-10 md:pb-12">
         <button

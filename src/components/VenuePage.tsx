@@ -2,6 +2,7 @@ import { Header } from './Header';
 import { Footer } from './Footer';
 import { FooterQuote } from './FooterQuote';
 import { ScrollReveal } from './ScrollReveal';
+import { scrollToTopEaseOut } from '../lib/scrollToTop';
 
 interface VenuePageProps {
   onBackToEntry: () => void;
@@ -17,7 +18,7 @@ export function VenuePage({ onBackToEntry, onBookNow }: VenuePageProps) {
       <Header
         selectedTab="General Donations"
         onTabChange={() => {}}
-        onGoHome={onBackToEntry}
+        onLogoClick={scrollToTopEaseOut}
         onBookNow={onBookNow}
         logoVariant="venue"
       />

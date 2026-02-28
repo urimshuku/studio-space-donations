@@ -3,6 +3,7 @@ import { ACTIVITIES } from '../lib/activitiesData';
 import { Header } from './Header';
 import { Footer } from './Footer';
 import { ScrollReveal } from './ScrollReveal';
+import { scrollToTopEaseOut } from '../lib/scrollToTop';
 
 interface ActivitiesPageProps {
   onBackToEntry: () => void;
@@ -14,7 +15,7 @@ export function ActivitiesPage({ onBackToEntry }: ActivitiesPageProps) {
       <Header
         selectedTab="General Donations"
         onTabChange={() => {}}
-        onGoHome={onBackToEntry}
+        onLogoClick={scrollToTopEaseOut}
         onJoinNow={() => {
           // Placeholder: wire up real join flow later
           console.log('Join Now clicked from Activities page');
