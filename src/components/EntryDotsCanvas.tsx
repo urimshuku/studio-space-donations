@@ -7,7 +7,6 @@ import { useEffect, useRef } from 'react';
 
 const DOT_COUNT = 100;
 const DOT_RADIUS = 1.5; // 2–3px
-const DOT_COLOR = 'rgba(90, 70, 50, 0.2)';
 const FLOAT_AMP = 28;
 const MOUSE_RADIUS = 140;
 const MOUSE_STRENGTH = 10;
@@ -26,6 +25,10 @@ interface Dot {
 
 interface EntryDotsCanvasProps {
   mouse: { x: number; y: number } | null;
+  /** Dot opacity multiplier (default 1). Use 0.75 for 25% less opacity on subpages. */
+  opacityScale?: number;
+  /** Animation speed multiplier (default 1). Use 0.75 for 25% slower on subpages. */
+  speedScale?: number;
 }
 
 function initDots(): Dot[] {
@@ -45,13 +48,23 @@ function initDots(): Dot[] {
   return dots;
 }
 
-export function EntryDotsCanvas({ mouse }: EntryDotsCanvasProps) {
+const DEFAULT_ALPHA = 0.2;
+
+export function EntryDotsCanvas({
+  mouse,
+  opacityScale = 1,
+  speedScale = 1,
+}: EntryDotsCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const dotsRef = useRef<Dot[] | null>(null);
   const rafRef = useRef<number>(0);
   const timeRef = useRef(0);
   const mouseRef = useRef(mouse);
+  const opacityRef = useRef(opacityScale);
+  const speedScaleRef = useRef(speedScale);
   mouseRef.current = mouse;
+  opacityRef.current = opacityScale;
+  speedScaleRef.current = speedScale;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -68,7 +81,7 @@ export function EntryDotsCanvas({ mouse }: EntryDotsCanvasProps) {
         const h = canvas.height;
         ctx.clearRect(0, 0, w, h);
         const dots = dotsRef.current!;
-        ctx.fillStyle = DOT_COLOR;
+        ctx.fillStyle = `rgba(90, 70, 50, ${DEFAULT_ALPHA * opacityRef.current})`;
         for (let i = 0; i < dots.length; i++) {
           const d = dots[i];
           const x = d.baseX * w;
@@ -102,9 +115,10 @@ export function EntryDotsCanvas({ mouse }: EntryDotsCanvasProps) {
       const w = canvas.width;
       const h = canvas.height;
       const t = (timeRef.current += 16) * 0.001;
+      const tScaled = t * speedScaleRef.current;
 
       ctx.clearRect(0, 0, w, h);
-      ctx.fillStyle = DOT_COLOR;
+      ctx.fillStyle = `rgba(90, 70, 50, ${DEFAULT_ALPHA * opacityRef.current})`;
 
       const m = mouseRef.current;
       const mx = m?.x ?? -9999;
@@ -114,8 +128,8 @@ export function EntryDotsCanvas({ mouse }: EntryDotsCanvasProps) {
         const d = dots[i];
         const freqX = (2 * Math.PI) / (d.periodX / 1000);
         const freqY = (2 * Math.PI) / (d.periodY / 1000);
-        let x = d.baseX * w + FLOAT_AMP * Math.sin(t * freqX + d.phaseX);
-        let y = d.baseY * h + FLOAT_AMP * Math.cos(t * freqY + d.phaseY);
+        let x = d.baseX * w + FLOAT_AMP * Math.sin(tScaled * freqX + d.phaseX);
+        let y = d.baseY * h + FLOAT_AMP * Math.cos(tScaled * freqY + d.phaseY);
 
         if (m) {
           const dx = x - mx;

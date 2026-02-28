@@ -3,6 +3,7 @@ import { Footer } from './Footer';
 import { FooterQuote } from './FooterQuote';
 import { ScrollReveal } from './ScrollReveal';
 import { scrollToTopEaseOut } from '../lib/scrollToTop';
+import { EntryDotsCanvas } from './EntryDotsCanvas';
 
 interface VenuePageProps {
   onBackToEntry: () => void;
@@ -14,7 +15,9 @@ const INTRO_IMAGE = 'https://placehold.co/1200x680/e5e7eb/9ca3af?text=Studio+Spa
 
 export function VenuePage({ onBackToEntry, onBookNow }: VenuePageProps) {
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-gray-50 flex flex-col relative">
+      <EntryDotsCanvas mouse={null} opacityScale={0.75} speedScale={0.75} />
+      <div className="relative z-10 flex flex-col flex-1 min-h-0">
       <Header
         selectedTab="General Donations"
         onTabChange={() => {}}
@@ -101,6 +104,7 @@ export function VenuePage({ onBackToEntry, onBookNow }: VenuePageProps) {
         <FooterQuote color="#d5a220" />
       </div>
       <Footer />
+      </div>
     </div>
   );
 }

@@ -14,7 +14,7 @@ interface ActivitiesPageProps {
 export function ActivitiesPage({ onBackToEntry, onJoinNow }: ActivitiesPageProps) {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col relative">
-      <EntryDotsCanvas mouse={null} />
+      <EntryDotsCanvas mouse={null} opacityScale={0.75} speedScale={0.75} />
       <div className="relative z-10 flex flex-col flex-1 min-h-0">
       <Header
         selectedTab="General Donations"

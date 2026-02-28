@@ -5,6 +5,7 @@ import { PaymentGateway } from './components/PaymentGateway';
 import { SuccessPage } from './components/SuccessPage';
 import { CancelPage } from './components/CancelPage';
 import { EntryChoice } from './components/EntryChoice';
+import { EntryDotsCanvas } from './components/EntryDotsCanvas';
 import { ActivitiesPage } from './components/ActivitiesPage';
 import { BookingPage } from './components/BookingPage';
 import { VenuePage } from './components/VenuePage';
@@ -436,7 +437,9 @@ function App() {
 
   if (currentPage === 'payment' && selectedCategory) {
     return (
-      <div className="min-h-screen bg-gray-50 flex flex-col">
+      <div className="min-h-screen bg-gray-50 flex flex-col relative">
+        <EntryDotsCanvas mouse={null} opacityScale={0.75} speedScale={0.75} />
+        <div className="relative z-10 flex flex-col flex-1 min-h-0">
         <Header selectedTab={selectedTab} onTabChange={handleTabChange} onLogoClick={scrollToTopEaseOut} onDonateNow={handleDonateNow} />
         <div className="flex-1 pb-12 overflow-x-hidden">
           <div className="mt-4 sm:mt-6 md:mt-8 pt-2 sm:pt-4 px-3 sm:px-4">
@@ -448,6 +451,7 @@ function App() {
           </div>
         </div>
         <Footer />
+        </div>
       </div>
     );
   }
@@ -464,7 +468,9 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-gray-50 flex flex-col relative">
+      <EntryDotsCanvas mouse={null} opacityScale={0.75} speedScale={0.75} />
+      <div className="relative z-10 flex flex-col flex-1 min-h-0">
       <Header selectedTab={selectedTab} onTabChange={handleTabChange} onLogoClick={scrollToTopEaseOut} onDonateNow={handleDonateNow} />
       <div className="flex-1">
       <div className="max-w-7xl mx-auto px-3 pt-6 pb-6 sm:px-4 sm:pt-8 sm:pb-8 md:pt-10 md:pb-12">
@@ -666,6 +672,7 @@ function App() {
       </div>
       </div>
       <Footer />
+      </div>
     </div>
   );
 }
