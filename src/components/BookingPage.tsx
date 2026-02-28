@@ -108,8 +108,8 @@ export function BookingPage({ onBackToEntry }: BookingPageProps) {
                   onChange={setSelectedDates}
                 />
               </div>
-              <div className="mt-3 flex flex-row gap-3 w-full min-w-0 max-w-full">
-                <div className="w-1/2 sm:flex-1 min-w-0 max-w-full">
+              <div className="mt-3 flex flex-col sm:flex-row gap-3 w-full min-w-0 max-w-full">
+                <div className="w-full sm:w-auto sm:flex-1 min-w-0 max-w-full">
                   <label htmlFor="booking-start-time" className="block text-sm font-medium text-gray-700 mb-1">
                     Start time
                   </label>
@@ -121,7 +121,7 @@ export function BookingPage({ onBackToEntry }: BookingPageProps) {
                     className="booking-time-input w-full max-w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-gray-900 focus:ring-2 focus:ring-gray-400 focus:border-gray-400 box-border"
                   />
                 </div>
-                <div className="w-1/2 sm:flex-1 min-w-0 max-w-full">
+                <div className="w-full sm:w-auto sm:flex-1 min-w-0 max-w-full">
                   <label htmlFor="booking-end-time" className="block text-sm font-medium text-gray-700 mb-1">
                     End time
                   </label>
