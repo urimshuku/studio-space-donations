@@ -1,0 +1,175 @@
+import { useState } from 'react';
+import { Header } from './Header';
+import { Footer } from './Footer';
+import { scrollToTopEaseOut } from '../lib/scrollToTop';
+import { ACTIVITIES } from '../lib/activitiesData';
+import type { ActivitySection } from '../lib/activitiesData';
+
+interface JoinPageProps {
+  onBackToActivities: () => void;
+}
+
+export function JoinPage({ onBackToActivities }: JoinPageProps) {
+  const [fullName, setFullName] = useState('');
+  const [contact, setContact] = useState('');
+  const [futureActivities, setFutureActivities] = useState('');
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+
+  const unclickableActivityIds = new Set(['films-documentaries', 'spiritual-events']);
+
+  const toggleActivity = (id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log({
+      fullName,
+      contact,
+      activities: Array.from(selectedIds),
+      futureActivities: futureActivities || undefined,
+    });
+    alert('Thank you! We’ll be in touch soon.');
+    onBackToActivities();
+  };
+
+  const activities: ActivitySection[] = ACTIVITIES;
+
+  return (
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      <Header
+        selectedTab="General Donations"
+        onTabChange={() => {}}
+        onLogoClick={scrollToTopEaseOut}
+        logoVariant="activities"
+      />
+      <div className="flex-1 flex flex-col">
+        <div className="max-w-7xl mx-auto w-full px-3 pt-6 pb-6 sm:px-4 sm:pt-8 sm:pb-8 md:pt-10 md:pb-12 flex flex-col flex-1">
+          <div className="flex-1 flex flex-col items-center justify-center min-h-0">
+            <div className="max-w-lg w-full">
+              <button
+                type="button"
+                onClick={() => {
+                  onBackToActivities();
+                  window.scrollTo(0, 0);
+                }}
+                className="mb-4 sm:mb-6 inline-flex items-center justify-center p-0 bg-transparent border-0 cursor-pointer hover:opacity-80 transition-opacity"
+                aria-label="Back to Activities"
+              >
+                <img
+                  src={`${(import.meta.env.BASE_URL || '/').replace(/\/$/, '')}/arrow-back.svg`}
+                  alt=""
+                  className="w-6 h-6 sm:w-7 sm:h-7 object-contain block"
+                />
+              </button>
+
+              <div className="bg-white rounded-xl sm:rounded-2xl shadow-md w-full border border-gray-200 p-4 sm:p-6 md:p-8">
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
+              Join an activity
+            </h1>
+            <p className="text-gray-600 text-sm sm:text-base mb-6">
+              Choose the activities you’d like to join and tell us your name. We’ll get back to you.
+            </p>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <fieldset className="space-y-3">
+                <legend className="text-sm font-semibold text-gray-900">
+                  Activities I’d like to join
+                </legend>
+                <ul className="space-y-2">
+                  {activities.map((activity) => {
+                    const disabled = unclickableActivityIds.has(activity.id);
+                    return (
+                      <li key={activity.id}>
+                        <label
+                          className={`flex items-center gap-3 ${disabled ? 'cursor-default opacity-70' : 'cursor-pointer group'}`}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={selectedIds.has(activity.id)}
+                            onChange={() => !disabled && toggleActivity(activity.id)}
+                            disabled={disabled}
+                            className="w-4 h-4 rounded border-gray-300 text-[#4DA1A9] focus:ring-[#4DA1A9] disabled:opacity-60 disabled:cursor-not-allowed"
+                          />
+                          <span className={disabled ? 'text-gray-500' : 'text-gray-700 group-hover:text-gray-900'}>
+                            {activity.title}
+                          </span>
+                        </label>
+                      </li>
+                    );
+                  })}
+                </ul>
+                <p className="text-gray-500 text-xs sm:text-sm mt-2">
+                  Note: Films & Documentaries and Spiritual Events are announced on our Instagram Page.
+                </p>
+              </fieldset>
+
+              <div className="space-y-4">
+                <div>
+                  <label htmlFor="join-full-name" className="block text-sm font-medium text-gray-700 mb-1">
+                    Full Name
+                  </label>
+                  <input
+                    id="join-full-name"
+                    type="text"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    required
+                    placeholder="Full name"
+                    className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-[#4DA1A9] focus:border-[#4DA1A9]"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="join-contact" className="block text-sm font-medium text-gray-700 mb-1">
+                    Contact
+                  </label>
+                  <input
+                    id="join-contact"
+                    type="text"
+                    value={contact}
+                    onChange={(e) => setContact(e.target.value)}
+                    placeholder="Email or phone"
+                    className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-[#4DA1A9] focus:border-[#4DA1A9]"
+                  />
+                </div>
+              </div>
+
+              <fieldset className="space-y-2">
+                <label htmlFor="join-future-activities" className="block text-sm font-semibold text-gray-900">
+                  What kind of activities would you like to see in the future?
+                </label>
+                <textarea
+                  id="join-future-activities"
+                  value={futureActivities}
+                  onChange={(e) => setFutureActivities(e.target.value)}
+                  placeholder="Your ideas..."
+                  rows={3}
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-[#4DA1A9] focus:border-[#4DA1A9] resize-y min-h-[80px]"
+                />
+              </fieldset>
+
+              <div className="pt-2 flex justify-center">
+                <button
+                  type="submit"
+                  className="w-full sm:w-auto px-4 py-2.5 rounded-lg text-white font-bold transition-all duration-200 shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#4DA1A9]"
+                  style={{ backgroundColor: '#4DA1A9' }}
+                >
+                  Send request
+                </button>
+              </div>
+            </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <Footer />
+    </div>
+  );
+}

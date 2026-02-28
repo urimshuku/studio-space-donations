@@ -7,19 +7,17 @@ import { scrollToTopEaseOut } from '../lib/scrollToTop';
 
 interface ActivitiesPageProps {
   onBackToEntry: () => void;
+  onJoinNow?: () => void;
 }
 
-export function ActivitiesPage({ onBackToEntry }: ActivitiesPageProps) {
+export function ActivitiesPage({ onBackToEntry, onJoinNow }: ActivitiesPageProps) {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header
         selectedTab="General Donations"
         onTabChange={() => {}}
         onLogoClick={scrollToTopEaseOut}
-        onJoinNow={() => {
-          // Placeholder: wire up real join flow later
-          console.log('Join Now clicked from Activities page');
-        }}
+        onJoinNow={onJoinNow}
         logoVariant="activities"
       />
       <div className="flex-1">
@@ -30,7 +28,7 @@ export function ActivitiesPage({ onBackToEntry }: ActivitiesPageProps) {
               onBackToEntry();
               window.scrollTo(0, 0);
             }}
-            className="mb-4 sm:mb-6 inline-flex items-center justify-center p-0 bg-transparent border-0 cursor-pointer hover:opacity-80 transition-opacity"
+            className="mb-4 sm:mb-6 ml-2 sm:ml-3 inline-flex items-center justify-center p-0 bg-transparent border-0 cursor-pointer hover:opacity-80 transition-opacity"
             aria-label="Back to Home"
           >
             <img

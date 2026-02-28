@@ -8,6 +8,7 @@ import { EntryChoice } from './components/EntryChoice';
 import { ActivitiesPage } from './components/ActivitiesPage';
 import { BookingPage } from './components/BookingPage';
 import { VenuePage } from './components/VenuePage';
+import { JoinPage } from './components/JoinPage';
 import { AllDonors } from './components/AllDonors';
 import { WordsOfSupport } from './components/WordsOfSupport';
 import { ImageCarousel } from './components/ImageCarousel';
@@ -17,7 +18,7 @@ import { supabase } from './lib/supabase';
 import { scrollToTopEaseOut } from './lib/scrollToTop';
 import type { Category } from './lib/types';
 
-type Page = 'entry' | 'home' | 'payment' | 'success' | 'cancel' | 'activities' | 'booking' | 'venue';
+type Page = 'entry' | 'home' | 'payment' | 'success' | 'cancel' | 'activities' | 'booking' | 'venue' | 'join';
 
 // Default categories when Supabase returns none (used on first load or if DB is empty)
 const DEFAULT_CATEGORIES: Category[] = [
@@ -121,6 +122,7 @@ function getPageFromPathname(): Page {
   if (isSuccessPath && params.get('paysera')) return 'success';
   if (pathname.endsWith('cancel') || pathname.includes('/cancel')) return 'cancel';
   if (pathname.includes('/book')) return 'booking';
+  if (pathname.includes('/join')) return 'join';
   if (pathname.includes('studio-space-activities')) return 'activities';
   if (pathname.includes('studio-space-venue')) return 'venue';
   if (pathname.includes('/donations')) return 'home';
@@ -185,6 +187,7 @@ function App() {
   const baseFull = getBaseFull();
   const donationsPath = `${baseFull}${baseFull === '/' ? '' : '/'}donations`;
   const activitiesPath = `${baseFull}${baseFull === '/' ? '' : '/'}studio-space-activities`;
+  const joinPath = `${baseFull}${baseFull === '/' ? '' : '/'}join`;
   const bookPath = `${baseFull}${baseFull === '/' ? '' : '/'}book`;
   const venuePath = `${baseFull}${baseFull === '/' ? '' : '/'}studio-space-venue`;
 
@@ -221,6 +224,18 @@ function App() {
   const handleBackToVenue = () => {
     window.history.pushState({}, '', venuePath);
     setCurrentPage('venue');
+    window.scrollTo(0, 0);
+  };
+
+  const handleGoToJoin = () => {
+    window.history.pushState({}, '', joinPath);
+    setCurrentPage('join');
+    window.scrollTo(0, 0);
+  };
+
+  const handleBackToActivities = () => {
+    window.history.pushState({}, '', activitiesPath);
+    setCurrentPage('activities');
     window.scrollTo(0, 0);
   };
 
@@ -391,7 +406,16 @@ function App() {
   }
 
   if (currentPage === 'activities') {
-    return <ActivitiesPage onBackToEntry={handleBackToEntry} />;
+    return (
+      <ActivitiesPage
+        onBackToEntry={handleBackToEntry}
+        onJoinNow={handleGoToJoin}
+      />
+    );
+  }
+
+  if (currentPage === 'join') {
+    return <JoinPage onBackToActivities={handleBackToActivities} />;
   }
 
   if (currentPage === 'venue') {
@@ -450,7 +474,7 @@ function App() {
             handleBackToEntry();
             window.scrollTo(0, 0);
           }}
-          className="mb-4 sm:mb-6 inline-flex items-center justify-center p-0 bg-transparent border-0 cursor-pointer hover:opacity-80 transition-opacity"
+          className="mb-4 sm:mb-6 ml-2 sm:ml-3 inline-flex items-center justify-center p-0 bg-transparent border-0 cursor-pointer hover:opacity-80 transition-opacity"
           aria-label="Back to Home"
         >
           <img
