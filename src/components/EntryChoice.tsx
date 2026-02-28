@@ -29,7 +29,7 @@ export function EntryChoice({ onChooseActivities, onChooseDonations, onChooseVen
 
   const logoClass = 'h-16 sm:h-20 md:h-24 w-auto object-contain flex-shrink-0';
   const logoButtonClass =
-    'entry-card-animate flex flex-1 min-w-0 md:flex-none items-center justify-center p-2 sm:p-4 bg-transparent border-0 cursor-pointer hover:opacity-80 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gray-400';
+    'entry-card-animate flex items-center justify-center p-2 sm:p-4 bg-transparent border-0 cursor-pointer hover:opacity-80 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gray-400';
 
   return (
     <div
@@ -39,7 +39,7 @@ export function EntryChoice({ onChooseActivities, onChooseDonations, onChooseVen
     >
       <EntryDotsCanvas mouse={mouse} />
       <div className="relative z-10 flex h-full min-h-screen items-center justify-center p-4 sm:p-6 md:p-8">
-        <div className="w-full max-w-5xl flex flex-row gap-4 sm:gap-6 md:grid md:grid-cols-3 md:gap-8">
+        <div className="w-full max-w-5xl flex flex-col items-center gap-6 sm:gap-8 md:gap-10">
           <button
             type="button"
             onClick={onChooseVenue}
