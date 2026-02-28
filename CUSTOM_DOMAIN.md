@@ -2,7 +2,7 @@
 
 This guide walks you through moving your site from:
 
-**Current URL:** `https://urimshuku.github.io/studio-space-donations/`  
+**Current URL:** `https://urimshuku.github.io/studio-space/`  
 **Target URL:** your own domain (e.g. `https://www.mystudio.com` or `https://donations.mystudio.com`).
 
 You need:
