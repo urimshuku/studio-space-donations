@@ -76,9 +76,9 @@ export function ImageCarousel() {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <div className="text-gray-400 text-[12pt]">
+                  <span className="carousel-caption--subtle">
                     {image.alt}
-                  </div>
+                  </span>
                 )}
               </div>
             </div>

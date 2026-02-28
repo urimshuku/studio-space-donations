@@ -39,7 +39,7 @@ export function EntryChoice({ onChooseActivities, onChooseDonations, onChooseVen
     >
       <EntryDotsCanvas mouse={mouse} />
       <div className="relative z-10 flex h-full min-h-screen items-center justify-center p-4 sm:p-6 md:p-8">
-        <div className="w-full max-w-5xl flex flex-col items-center gap-6 sm:gap-8 md:gap-10">
+        <div className="w-full max-w-5xl flex flex-col items-center gap-10 sm:gap-12 md:gap-14 -mt-8 sm:-mt-10">
           <button
             type="button"
             onClick={onChooseVenue}

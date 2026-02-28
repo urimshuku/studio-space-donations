@@ -144,4 +144,27 @@ a:hover .footer-link-underline::after {
 .entry-card-animate:nth-child(2) { animation-delay: 80ms; }
 .entry-card-animate:nth-child(3) { animation-delay: 160ms; }
 
+/* Carousel placeholder/caption: small, subtle label — not a title */
+.carousel-caption--subtle {
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: #6b7280;
+}
+@media (min-width: 640px) {
+  .carousel-caption--subtle {
+    font-size: 12px;
+  }
+}
+@media (min-width: 768px) {
+  .carousel-caption--subtle {
+    font-size: 13px;
+  }
+}
+
+/* Booking time inputs: remove grey background on mobile (e.g. iOS Safari) */
+.booking-time-input {
+  background-color: #fff !important;
+}
+
 /* Entry page dots: canvas-based in EntryDotsCanvas; prefers-reduced-motion handled in JS */

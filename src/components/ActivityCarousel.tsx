@@ -76,9 +76,9 @@ export function ActivityCarousel({ images, label = 'Gallery' }: ActivityCarousel
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <div className="text-gray-400 text-[12pt]">
+                  <span className="carousel-caption--subtle">
                     Studio Space Photo {i + 1}
-                  </div>
+                  </span>
                 )}
               </div>
             </div>

@@ -88,7 +88,7 @@ export function BookingPage({ onBackToEntry }: BookingPageProps) {
             />
           </button>
 
-          <div className="bg-white rounded-xl sm:rounded-2xl shadow-md p-4 sm:p-6 md:p-8 border border-gray-100 space-y-4 sm:space-y-6">
+          <div className="bg-white rounded-xl sm:rounded-2xl shadow-md p-4 sm:p-6 md:p-8 border border-gray-100 space-y-4 sm:space-y-6 min-w-0 overflow-hidden">
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
               Book the Space
             </h1>
@@ -108,8 +108,8 @@ export function BookingPage({ onBackToEntry }: BookingPageProps) {
                   onChange={setSelectedDates}
                 />
               </div>
-              <div className="mt-3 flex flex-col sm:flex-row gap-3 w-full min-w-0">
-                <div className="flex-1 min-w-0">
+              <div className="mt-3 flex flex-col sm:flex-row gap-3 w-full min-w-0 max-w-full">
+                <div className="flex-1 min-w-0 max-w-full">
                   <label htmlFor="booking-start-time" className="block text-sm font-medium text-gray-700 mb-1">
                     Start time
                   </label>
@@ -118,10 +118,10 @@ export function BookingPage({ onBackToEntry }: BookingPageProps) {
                     type="time"
                     value={startTime}
                     onChange={(e) => setStartTime(e.target.value)}
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-gray-900 focus:ring-2 focus:ring-gray-400 focus:border-gray-400"
+                    className="booking-time-input w-full max-w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-gray-900 focus:ring-2 focus:ring-gray-400 focus:border-gray-400 box-border"
                   />
                 </div>
-                <div className="flex-1 min-w-0">
+                <div className="flex-1 min-w-0 max-w-full">
                   <label htmlFor="booking-end-time" className="block text-sm font-medium text-gray-700 mb-1">
                     End time
                   </label>
@@ -130,7 +130,7 @@ export function BookingPage({ onBackToEntry }: BookingPageProps) {
                     type="time"
                     value={endTime}
                     onChange={(e) => setEndTime(e.target.value)}
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-gray-900 focus:ring-2 focus:ring-gray-400 focus:border-gray-400"
+                    className="booking-time-input w-full max-w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-gray-900 focus:ring-2 focus:ring-gray-400 focus:border-gray-400 box-border"
                   />
                 </div>
               </div>
